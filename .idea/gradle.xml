@@ -9,14 +9,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/LiveEffect" />
-            <option value="$PROJECT_DIR$/MegaDrone" />
-            <option value="$PROJECT_DIR$/RhythmGame" />
-            <option value="$PROJECT_DIR$/SoundBoard" />
-            <option value="$PROJECT_DIR$/audio-device" />
-            <option value="$PROJECT_DIR$/hello-oboe" />
             <option value="$PROJECT_DIR$/iolib" />
-            <option value="$PROJECT_DIR$/minimaloboe" />
             <option value="$PROJECT_DIR$/nativemusicplayer" />
             <option value="$PROJECT_DIR$/parselib" />
           </set>
