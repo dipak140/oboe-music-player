@@ -15,13 +15,6 @@
  *
  */
 
-include ':audio-device'
-include ':hello-oboe'
-include ':RhythmGame'
-include ':MegaDrone'
-include ':LiveEffect'
-include ':SoundBoard'
 include ':nativemusicplayer'
 include ':parselib'
 include ':iolib'
-include ':minimaloboe'
