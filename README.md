@@ -9,11 +9,17 @@ and now includes the capability to pause and resume both the entire audio stream
 Features
 -------------
 **Multiple Sample Playback:** Play multiple audio samples at the same time.
+
 **Low Latency:** Uses Oboe's PerformanceMode::LowLatency for optimal performance.
+
 **Pause/Resume Functionality:**
+
 **Global Pause/Resume:** Pause and resume the entire audio stream with all samples.
+
 **Per-Sample Pause/Resume:** Pause and resume individual audio samples, maintaining their playback positions.
+
 **Error Handling:** Automatically resets and restarts the stream in case of disconnections or errors.
+
 **Pan and Gain Control:** Adjust the panning (left-right audio positioning) and gain (volume) for each sample.
 
 For more information see [Full Guide to Oboe](FullGuide.md).
