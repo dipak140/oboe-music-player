@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/LiveEffect/oboe-mp3-player.LiveEffect.iml" filepath="$PROJECT_DIR$/.idea/modules/LiveEffect/oboe-mp3-player.LiveEffect.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/MegaDrone/oboe-mp3-player.MegaDrone.iml" filepath="$PROJECT_DIR$/.idea/modules/MegaDrone/oboe-mp3-player.MegaDrone.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RhythmGame/oboe-mp3-player.RhythmGame.iml" filepath="$PROJECT_DIR$/.idea/modules/RhythmGame/oboe-mp3-player.RhythmGame.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SoundBoard/oboe-mp3-player.SoundBoard.iml" filepath="$PROJECT_DIR$/.idea/modules/SoundBoard/oboe-mp3-player.SoundBoard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/audio-device/oboe-mp3-player.audio-device.iml" filepath="$PROJECT_DIR$/.idea/modules/audio-device/oboe-mp3-player.audio-device.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hello-oboe/oboe-mp3-player.hello-oboe.iml" filepath="$PROJECT_DIR$/.idea/modules/hello-oboe/oboe-mp3-player.hello-oboe.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/minimaloboe/oboe-mp3-player.minimaloboe.iml" filepath="$PROJECT_DIR$/.idea/modules/minimaloboe/oboe-mp3-player.minimaloboe.iml" />
+    </modules>
+  </component>
+</project>
