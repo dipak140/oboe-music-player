@@ -11,7 +11,6 @@ import android.os.Environment
 import android.util.Log
 import android.Manifest
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -19,6 +18,7 @@ import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
 import `in`.reconv.oboenativemodule.DuplexStreamForegroundService
 import `in`.reconv.oboenativemodule.LiveEffectEngine
+import `in`.reconv.oboemusicplayerandrecorder.NativeLib
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileOutputStream
@@ -40,6 +40,7 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
     private var mediaPlayer: MediaPlayer? = null
     private val PERMISSION_REQUEST_CODE = 1001
+    private var nativeLib: NativeLib? = null
 
     init {
         // Load the native library that contains the JNI functions
@@ -48,6 +49,9 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        nativeLib = NativeLib()
+        println("Message from the native land: " + nativeLib?.stringFromJNI())
+        println("Message from the native land: " + nativeLib?.onRecordingStarted("test"))
         setContentView(R.layout.activity_simple_audio_player)
 
         // Check and request permissions
