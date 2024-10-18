@@ -14,6 +14,7 @@ class NativeLib {
     external fun onRecordingStarted(eventInfo: String): String
 
     companion object {
+        val NUM_PLAY_CHANNELS: Int = 2
         // Used to load the 'oboemusicplayerandrecorder' library on application startup.
         init {
             System.loadLibrary("oboemusicplayerandrecorder")
@@ -34,6 +35,30 @@ class NativeLib {
         } catch (ex: IOException) {
             Log.i(TAG, "IOException$ex")
         }
+    }
+
+    fun setupAudioStream() {
+        setupAudioStreamNative(NUM_PLAY_CHANNELS)
+    }
+
+    fun startAudioStream() {
+        startAudioStreamNative()
+    }
+
+    fun teardownAudioStream() {
+        teardownAudioStreamNative()
+    }
+
+    // asset-based samples
+    fun loadWavAssets(assetMgr: AssetManager) {
+        loadWavAsset(assetMgr, "Karoke_aaj_se_teri.wav", 0, 0f)
+        loadWavAsset(assetMgr, "Karoke_baaton_ko_teri.wav", 1, 0f)
+        loadWavAsset(assetMgr, "Karoke_chahun_mei_ya_naa.wav", 2, 0f)
+        loadWavAsset(assetMgr, "Karoke_tum_he_ho.wav", 3, 0f)
+    }
+
+    fun unloadWavAssets() {
+        unloadWavAssetsNative()
     }
 
     private external fun setupAudioStreamNative(numChannels: Int)
