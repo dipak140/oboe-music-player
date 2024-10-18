@@ -50,10 +50,12 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple_audio_player)
 
+        // Check and request permissions
         if (!hasPermissions()) {
             requestPermissions()
         }
-
+        
+        // Setup oboe recording and start foreground service
         LiveEffectEngine.setCallbackObject(this)
         LiveEffectEngine.setDefaultStreamValues(this)
         volumeControlStream = AudioManager.STREAM_MUSIC
@@ -152,9 +154,10 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
     override fun onStart() {
         super.onStart()
         // Setup audio stream when the activity starts
-        mMusicPlayer.setupAudioStream()
-        mMusicPlayer.loadWavAssets(assets)
-        mMusicPlayer.startAudioStream()
+        mMusicPlayer.setupAudioStream() // Setup audio stream, basically call open stream in simple multi player
+        mMusicPlayer.loadWavAssets(assets) // Load WAV files from assets before the call to start even begins
+        mMusicPlayer.startAudioStream() // Start the audio stream, this is a check function which makes 
+                                        // sure the open stream is working, openstream has already been called in setupAudioStream
         setGainFromSeekBar(gainSeekBar.progress)
     }
 
@@ -194,30 +197,6 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
     }
 
     // Function to start recording and play selected WAV file at the same time
-//    private suspend fun startRecordingAndPlaySample() = withContext(Dispatchers.IO) {
-//        val recordedFilePath = getRecordingFilePath("recording.wav")
-//        if (recordedFilePath != null) {
-//            isRecording = true
-//            Thread {
-//                LiveEffectEngine.startRecording(recordedFilePath, 8, System.currentTimeMillis())
-//            }.start()
-//            Log.d(TAG, "Recording started")
-//
-//            if (selectedWavFile != null) {
-//                playAudioSample(selectedWavFile!!)
-//            } else {
-//                withContext(Dispatchers.Main) {
-//                    Toast.makeText(this@SimpleAudioPlayerActivity, "No valid WAV file selected", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//        } else {
-//            withContext(Dispatchers.Main) {
-//                Toast.makeText(this@SimpleAudioPlayerActivity, "Unable to get recording file path", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
-
-    // Function to start recording and play selected WAV file at the same time
     private suspend fun startRecordingAndPlaySample() = withContext(Dispatchers.IO) {
         val recordedFilePath = getRecordingFilePath("recording.wav")
         if (recordedFilePath != null) {
@@ -241,9 +220,8 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
             }
 
             // Wait for both jobs to finish (if needed, you can await them if further actions depend on their completion)
-            recordJob.join()
             playJob.join()
-
+            recordJob.join()
         } else {
             withContext(Dispatchers.Main) {
                 Toast.makeText(this@SimpleAudioPlayerActivity, "Unable to get recording file path", Toast.LENGTH_SHORT).show()
@@ -375,7 +353,6 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
     // FFmpeg command to merge the two audio files
     private fun mergeAudioFiles(recordedFilePath: String, selectedFilePath: String, outputFilePath: String) {
-        //val ffmpegCommand = "-i $recordedFilePath -i $selectedFilePath -filter_complex amix=inputs=2:duration=first:dropout_transition=2 $outputFilePath"
         val ffmpegCommand = "-i $recordedFilePath -i $selectedFilePath -filter_complex \"[1]volume=0.5[a];[0][a]amix=inputs=2:duration=first:dropout_transition=2\" $outputFilePath"
         val session = FFmpegKit.execute(ffmpegCommand)
 
