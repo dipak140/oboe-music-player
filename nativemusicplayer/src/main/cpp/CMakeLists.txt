@@ -56,7 +56,6 @@ set (APP_SOURCES
 # Build the drumthumper (native) library
 add_library(drumthumper SHARED
         ${APP_SOURCES}
-        NativePlayer.cpp
         )
 
 # Enable optimization flags: if having problems with source level debugging,
