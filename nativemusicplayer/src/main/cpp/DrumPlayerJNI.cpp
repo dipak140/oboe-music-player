@@ -72,6 +72,9 @@ JNIEXPORT void JNICALL Java_com_plausiblesoftware_drumthumper_MusicPlayer_teardo
 /**
  * Native (JNI) implementation of MusicPlayer.loadWavAssetNative()
  */
+
+// the trick is to load the wav files before being asked to play, this way we can make sure that the
+// lease possible latency is being introduced.
 JNIEXPORT void JNICALL Java_com_plausiblesoftware_drumthumper_MusicPlayer_loadWavAssetNative(
         JNIEnv* env, jobject, jbyteArray bytearray, jint index, jfloat pan) {
     int len = env->GetArrayLength (bytearray);

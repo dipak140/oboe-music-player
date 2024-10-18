@@ -121,6 +121,7 @@ bool SimpleMultiPlayer::openStream() {
     return true;
 }
 
+// Just trying to open the stream if it is not already open.
 bool SimpleMultiPlayer::startStream() {
     int tryCount = 0;
     while (tryCount < 3) {
