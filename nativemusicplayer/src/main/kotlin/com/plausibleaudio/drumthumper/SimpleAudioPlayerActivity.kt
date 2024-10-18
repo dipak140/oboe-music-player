@@ -29,7 +29,7 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
     private val TAG = "SimpleAudioPlayerActivity"
     private var mAudioMgr: AudioManager? = null
-    private var mMusicPlayer = MusicPlayer()
+    private var mMusicPlayer = NativeLib()
 
     private lateinit var gainSeekBar: SeekBar
     private lateinit var fileSpinner: Spinner
@@ -49,9 +49,6 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        nativeLib = NativeLib()
-        println("Message from the native land: " + nativeLib?.stringFromJNI())
-        println("Message from the native land: " + nativeLib?.onRecordingStarted("test"))
         setContentView(R.layout.activity_simple_audio_player)
 
         // Check and request permissions
