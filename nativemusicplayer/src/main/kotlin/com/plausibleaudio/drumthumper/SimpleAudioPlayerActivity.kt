@@ -40,12 +40,6 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
     private var mediaPlayer: MediaPlayer? = null
     private val PERMISSION_REQUEST_CODE = 1001
-    private var nativeLib: NativeLib? = null
-
-    init {
-        // Load the native library that contains the JNI functions
-        System.loadLibrary("drumthumper")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
