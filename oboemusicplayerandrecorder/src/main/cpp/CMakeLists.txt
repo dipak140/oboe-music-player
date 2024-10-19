@@ -6,6 +6,7 @@ project("oboemusicplayerandrecorder")
 
 get_filename_component(SAMPLE_ROOT_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/../../.. ABSOLUTE)
+include_directories(third_party)
 set (OBOE_DIR ${SAMPLE_ROOT_DIR}/oboe)
 
 add_subdirectory(${OBOE_DIR} ./oboe-bin)
@@ -25,7 +26,9 @@ include_directories(
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
-        oboemusicplayerandrecorder.cpp)
+        oboemusicplayerandrecorder.cpp
+        LiveEffectEngine.cpp
+    )
 
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Werror "$<$<CONFIG:RELEASE>:-Ofast>")
 

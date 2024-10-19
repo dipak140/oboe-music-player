@@ -10,11 +10,18 @@
 
 #include <player/OneShotSampleSource.h>
 #include <player/SimpleMultiPlayer.h>
+#include "LiveEffectEngine.h"
 
 static const char* TAG = "MusicPlayerRecorderJNI";
-
+JavaVM* g_javaVM = nullptr; // Define JavaVM pointer
+jobject g_callbackObject = nullptr; // Define g_callbackObject
 using namespace iolib;
 using namespace parselib;
+
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
+    g_javaVM = vm; // Store the JavaVM pointer
+    return JNI_VERSION_1_6; // Return the JNI version you're using
+}
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,9 +74,6 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayerandrecorder_NativeLib_teard
     sDTPlayer.teardownAudioStream();
 }
 
-/**
- * Native (JNI) implementation of MusicPlayer.allocSampleDataNative()
- */
 /**
  * Native (JNI) implementation of MusicPlayer.loadWavAssetNative()
  */
