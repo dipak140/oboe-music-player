@@ -11,7 +11,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/iolib" />
             <option value="$PROJECT_DIR$/nativemusicplayer" />
-            <option value="$PROJECT_DIR$/oboemusicplayerandrecorder" />
+            <option value="$PROJECT_DIR$/oboemusicplayer" />
             <option value="$PROJECT_DIR$/parselib" />
           </set>
         </option>

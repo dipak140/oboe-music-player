@@ -1,0 +1,16 @@
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/CMakeFiles/parselib.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/CMakeFiles/iolib.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/CMakeFiles/oboemusicplayerandrecorder.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/CMakeFiles/edit_cache.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/CMakeFiles/rebuild_cache.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/CMakeFiles/list_install_components.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/CMakeFiles/install.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/CMakeFiles/install/local.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/CMakeFiles/install/strip.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/oboe-bin/CMakeFiles/oboe.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/oboe-bin/CMakeFiles/edit_cache.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/oboe-bin/CMakeFiles/rebuild_cache.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/oboe-bin/CMakeFiles/list_install_components.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/oboe-bin/CMakeFiles/install.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/oboe-bin/CMakeFiles/install/local.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/x86/oboe-bin/CMakeFiles/install/strip.dir

@@ -1,0 +1,16 @@
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/CMakeFiles/parselib.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/CMakeFiles/iolib.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/CMakeFiles/oboemusicplayerandrecorder.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/CMakeFiles/list_install_components.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/CMakeFiles/install.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/CMakeFiles/install/local.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/CMakeFiles/install/strip.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/oboe-bin/CMakeFiles/oboe.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/oboe-bin/CMakeFiles/edit_cache.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/oboe-bin/CMakeFiles/rebuild_cache.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/oboe-bin/CMakeFiles/list_install_components.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/oboe-bin/CMakeFiles/install.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/oboe-bin/CMakeFiles/install/local.dir
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a/oboe-bin/CMakeFiles/install/strip.dir

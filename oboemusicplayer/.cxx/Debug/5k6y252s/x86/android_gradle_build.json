@@ -1,0 +1,59 @@
+{
+  "buildFiles": [
+    "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/iolib/src/main/cpp/CMakeLists.txt",
+    "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayer/oboe/CMakeLists.txt",
+    "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayer/src/main/cpp/CMakeLists.txt",
+    "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/parselib/src/main/cpp/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/dipaksisodiya/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayer/.cxx/Debug/5k6y252s/x86",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/dipaksisodiya/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayer/.cxx/Debug/5k6y252s/x86",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "iolib::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "x86",
+      "artifactName": "iolib",
+      "output": "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayer/.cxx/Debug/5k6y252s/x86/libiolib.a"
+    },
+    "oboe::@2eb8bc11657237233fcf": {
+      "toolchain": "toolchain",
+      "abi": "x86",
+      "artifactName": "oboe",
+      "output": "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayer/.cxx/Debug/5k6y252s/x86/oboe-bin/liboboe.a"
+    },
+    "oboemusicplayerandrecorder::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "x86",
+      "artifactName": "oboemusicplayerandrecorder",
+      "output": "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayer/build/intermediates/cxx/Debug/5k6y252s/obj/x86/liboboemusicplayerandrecorder.so",
+      "runtimeFiles": []
+    },
+    "parselib::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "x86",
+      "artifactName": "parselib",
+      "output": "/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayer/.cxx/Debug/5k6y252s/x86/libparselib.a"
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "/Users/dipaksisodiya/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang.lld",
+      "cppCompilerExecutable": "/Users/dipaksisodiya/Library/Android/sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang++.lld"
+    }
+  },
+  "cFileExtensions": [],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}

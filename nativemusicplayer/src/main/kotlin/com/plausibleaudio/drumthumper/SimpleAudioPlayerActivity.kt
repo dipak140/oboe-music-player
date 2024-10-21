@@ -16,8 +16,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
-import `in`.reconv.oboemusicplayerandrecorder.DuplexStreamForegroundService
-import `in`.reconv.oboemusicplayerandrecorder.NativeLib
+import `in`.reconv.oboemusicplayer.DuplexStreamForegroundService
+import `in`.reconv.oboemusicplayer.NativeLib
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileOutputStream

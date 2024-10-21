@@ -18,4 +18,4 @@
 include ':nativemusicplayer'
 include ':parselib'
 include ':iolib'
-include ':oboemusicplayerandrecorder'
+include ':oboemusicplayer'
