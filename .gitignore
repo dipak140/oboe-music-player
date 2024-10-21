@@ -14,7 +14,7 @@
 /iolib/.cxx
 /oboe/.cxx
 /parselib/.cxx
-/oboemusicplayerandrecorder/build
-/oboemusicplayerandrecorder/.cxx
+/oboemusicplayer/build
+/oboemusicplayer/.cxx
 .externalNativeBuild
 test/build

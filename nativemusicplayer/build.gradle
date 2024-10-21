@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])ww
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
     implementation "androidx.core:core-ktx:$kotlin_version"
