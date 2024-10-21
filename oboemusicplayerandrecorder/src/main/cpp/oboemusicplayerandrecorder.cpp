@@ -7,7 +7,6 @@
 #include <android/log.h>
 #include <stream/MemInputStream.h>
 #include <wav/WavStreamReader.h>
-
 #include <player/OneShotSampleSource.h>
 #include <player/SimpleMultiPlayer.h>
 #include "LiveEffectEngine.h"
@@ -17,6 +16,9 @@ JavaVM* g_javaVM = nullptr; // Define JavaVM pointer
 jobject g_callbackObject = nullptr; // Define g_callbackObject
 using namespace iolib;
 using namespace parselib;
+static LiveEffectEngine * engine = nullptr;
+static const int kOboeApiAAudio = 0;
+static const int kOboeApiOpenSLES = 1;
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     g_javaVM = vm; // Store the JavaVM pointer
@@ -174,3 +176,210 @@ JNIEXPORT jfloat JNICALL Java_in_reconv_oboemusicplayerandrecorder_NativeLib_get
 #ifdef __cplusplus
 }
 #endif
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_create(JNIEnv *env, jobject thiz) {
+    if (engine == nullptr) {
+        engine = new LiveEffectEngine();
+    }
+
+    return (engine != nullptr) ? JNI_TRUE : JNI_FALSE;
+}
+
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_isAAudioRecommended(JNIEnv *env, jobject thiz) {
+    // TODO: implement isAAudioRecommended()
+    if (engine == nullptr) {
+        return JNI_FALSE;
+    }
+    return engine -> isAAudioRecommended() ? JNI_TRUE : JNI_FALSE;
+}
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_setAPI(JNIEnv *env, jobject thiz,
+                                                           jint api_type) {
+    if (engine == nullptr) {
+        return JNI_FALSE;
+    }
+
+    oboe::AudioApi audioApi;
+    switch (api_type) {
+        case kOboeApiAAudio:
+            audioApi = oboe::AudioApi::AAudio;
+            break;
+        case kOboeApiOpenSLES:
+            audioApi = oboe::AudioApi::OpenSLES;
+            break;
+        default:
+            return JNI_FALSE;
+    }
+
+    return engine -> setAudioApi(audioApi) ? JNI_TRUE : JNI_FALSE;
+}
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_setEffectOn(JNIEnv *env, jobject thiz,
+                                                                jboolean is_effect_on) {
+    if (engine == nullptr){
+        return JNI_FALSE;
+    }
+    return engine -> setEffectOn(is_effect_on) ? JNI_TRUE : JNI_FALSE;
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_setRecordingDeviceId(JNIEnv *env, jobject thiz,
+                                                                         jint device_id) {
+    if (engine == nullptr) {
+        return;
+    }
+    engine -> setRecordingDeviceId(device_id);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_setPlaybackDeviceId(JNIEnv *env, jobject thiz,
+                                                                        jint device_id) {
+    if (engine == nullptr) {
+        return;
+    }
+    engine -> setPlaybackDeviceId(device_id);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_delete(JNIEnv *env, jobject thiz) {
+    // TODO: implement delete()
+    if(engine){
+        engine ->setEffectOn(false);
+        delete engine;
+        engine = nullptr;
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_native_1setDefaultStreamValues(JNIEnv *env,
+                                                                                   jobject thiz,
+                                                                                   jint default_sample_rate,
+                                                                                   jint default_frames_per_burst) {
+    oboe::DefaultStreamValues::SampleRate = (int32_t) default_sample_rate;
+    oboe::DefaultStreamValues::FramesPerBurst = (int32_t) default_frames_per_burst;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_setVolume(JNIEnv *env, jobject thiz,
+                                                              jfloat volume) {
+    engine ->setVolume(volume);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_startRecording(JNIEnv *env, jobject thiz,
+                                                                   jstring full_path_tofile,
+                                                                   jint input_preset_preference,
+                                                                   jlong start_recording_time) {
+    if (engine == nullptr) {
+        __android_log_print(ANDROID_LOG_ERROR, "OboeMusicPlayerAndRecorder", "engine == nullptr");
+        return;
+    }
+
+    oboe::InputPreset inputPreset;
+    switch (input_preset_preference) {
+        case 10:
+            inputPreset = oboe::InputPreset::VoicePerformance;
+            break;
+        case 9:
+            inputPreset = oboe::InputPreset::Unprocessed;
+            break;
+        default:
+            return;
+    }
+
+    const char *path = (*env).GetStringUTFChars(full_path_tofile, 0);
+    engine -> startRecording(path, inputPreset, start_recording_time);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_startRecordingWithoutFile(JNIEnv *env,
+                                                                              jobject thiz,
+                                                                              jstring full_path_tofile,
+                                                                              jstring music_file_path,
+                                                                              jint input_preset_preference,
+                                                                              jlong start_recording_time) {
+    // TODO: implement startRecordingWithoutFile()
+    if (engine == nullptr) {
+        return;
+    }
+
+    oboe::InputPreset inputPreset;
+    switch (input_preset_preference) {
+        case 10:
+            inputPreset = oboe::InputPreset::VoicePerformance;
+            break;
+        case 9:
+            inputPreset = oboe::InputPreset::Unprocessed;
+            break;
+        default:
+            return;
+    }
+
+    const char *path = (*env).GetStringUTFChars(full_path_tofile, 0);
+    const char *musicPath = (*env).GetStringUTFChars(music_file_path, 0);
+    engine -> startRecordingWithoutFile(path, musicPath, inputPreset, start_recording_time);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_stopRecording(JNIEnv *env, jobject thiz) {
+    if (engine == nullptr) {
+        return;
+    }
+
+    engine -> stopRecording();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_resumeRecording(JNIEnv *env, jobject thiz) {
+    if (engine == nullptr) {
+        return;
+    }
+    engine ->resumeRecording();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_pauseRecording(JNIEnv *env, jobject thiz) {
+    if (engine == nullptr) {
+        return;
+    }
+    engine ->pauseRecording();
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_getRecordingDelay(JNIEnv *env, jobject thiz) {
+    if (engine == nullptr) {
+        return 0;
+    }
+    return engine ->getStartRecordingDelay();
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_in_reconv_oboemusicplayerandrecorder_NativeLib_setCallbackObject(JNIEnv *env, jobject thiz,
+                                                                      jobject callback_object) {
+    if (g_callbackObject != nullptr) {
+        env->DeleteGlobalRef(g_callbackObject);
+    }
+    // Create a new global reference to the callback object
+    g_callbackObject = env->NewGlobalRef(callback_object);
+}

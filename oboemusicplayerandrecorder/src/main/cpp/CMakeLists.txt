@@ -28,6 +28,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         oboemusicplayerandrecorder.cpp
         LiveEffectEngine.cpp
+        AudioEngine.cpp
     )
 
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Werror "$<$<CONFIG:RELEASE>:-Ofast>")
@@ -40,7 +41,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         android
         log
         iolib
-
         parselib
         oboe
 )

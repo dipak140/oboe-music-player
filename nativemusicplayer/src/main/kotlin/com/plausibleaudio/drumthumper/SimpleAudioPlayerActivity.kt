@@ -16,8 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
-import `in`.reconv.oboenativemodule.DuplexStreamForegroundService
-import `in`.reconv.oboenativemodule.LiveEffectEngine
+import `in`.reconv.oboemusicplayerandrecorder.DuplexStreamForegroundService
 import `in`.reconv.oboemusicplayerandrecorder.NativeLib
 import kotlinx.coroutines.*
 import java.io.File
@@ -51,17 +50,17 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
         }
         
         // Setup oboe recording and start foreground service
-        LiveEffectEngine.setCallbackObject(this)
-        LiveEffectEngine.setDefaultStreamValues(this)
+        mMusicPlayer.setCallbackObject(this)
+        mMusicPlayer.setDefaultStreamValues(this)
         volumeControlStream = AudioManager.STREAM_MUSIC
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val serviceIntent = Intent(DuplexStreamForegroundService.ACTION_START, null, this, DuplexStreamForegroundService::class.java)
             startForegroundService(serviceIntent)
         }
-        LiveEffectEngine.create()
-        LiveEffectEngine.isAAudioRecommended()
-        LiveEffectEngine.setAPI(0)
+        mMusicPlayer.create()
+        mMusicPlayer.isAAudioRecommended()
+        mMusicPlayer.setAPI(0)
 
         // Initialize the AudioManager
         mAudioMgr = getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -141,7 +140,7 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
     override fun onDestroy() {
         super.onDestroy()
-        LiveEffectEngine.delete()
+        mMusicPlayer.delete()
         mediaPlayer?.release()
         mediaPlayer = null
     }
@@ -199,7 +198,7 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
             // Start recording in a separate coroutine
             val recordJob = CoroutineScope(Dispatchers.IO).launch {
-                LiveEffectEngine.startRecording(recordedFilePath, 8, System.currentTimeMillis())
+                mMusicPlayer.startRecording(recordedFilePath, 9, System.currentTimeMillis())
                 Log.d(TAG, "Recording started")
             }
 
@@ -309,7 +308,7 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
                 }
 
                 // Ensure LiveEffectEngine is properly stopped
-                LiveEffectEngine.stopRecording()
+                mMusicPlayer.stopRecording()
                 isRecording = false
 
                 // Merge the recorded file and selected WAV file

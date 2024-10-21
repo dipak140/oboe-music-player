@@ -38,7 +38,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.arthenica:ffmpeg-kit-full:6.0-2'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
-    implementation 'in.reconv:oboenativemodule:1.1.7'
     implementation "androidx.core:core-ktx:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation project(path: ':oboemusicplayerandrecorder')
