@@ -1,0 +1,98 @@
+ninja: Entering directory `/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/.cxx/Debug/535t3e46/armeabi-v7a'
+[1/81] Building CXX object CMakeFiles/parselib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/parselib/src/main/cpp/wav/AudioEncoding.cpp.o
+[2/81] Building CXX object CMakeFiles/parselib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/parselib/src/main/cpp/stream/InputStream.cpp.o
+[3/81] Building CXX object CMakeFiles/parselib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/parselib/src/main/cpp/wav/WavChunkHeader.cpp.o
+[4/81] Building CXX object CMakeFiles/parselib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/parselib/src/main/cpp/wav/WavRIFFChunkHeader.cpp.o
+[5/81] Building CXX object CMakeFiles/parselib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/parselib/src/main/cpp/stream/FileInputStream.cpp.o
+[6/81] Building CXX object CMakeFiles/parselib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/parselib/src/main/cpp/wav/WavFmtChunkHeader.cpp.o
+[7/81] Building CXX object CMakeFiles/iolib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/iolib/src/main/cpp/player/SampleSource.cpp.o
+[8/81] Building CXX object CMakeFiles/parselib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/parselib/src/main/cpp/stream/MemInputStream.cpp.o
+[9/81] Building CXX object CMakeFiles/iolib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/iolib/src/main/cpp/player/OneShotSampleSource.cpp.o
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/iolib/src/main/cpp/player/OneShotSampleSource.cpp:51:66: warning: multiple unsequenced modifications to 'mCurSampleIndex' [-Wunsequenced]
+                outBuff[dstSampleIndex++] += data[mCurSampleIndex++] * mLeftGain +
+                                                                 ^
+1 warning generated.
+[10/81] Building CXX object CMakeFiles/iolib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/iolib/src/main/cpp/player/SampleBuffer.cpp.o
+In file included from /Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/iolib/src/main/cpp/player/SampleBuffer.cpp:20:
+In file included from /Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/oboe/src/flowgraph/resampler/MultiChannelResampler.h:34:
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/oboe/src/flowgraph/resampler/HyperbolicCosineWindow.h:24:36: warning: nested namespace definition is a C++17 extension; define each namespace separately [-Wc++17-extensions]
+namespace RESAMPLER_OUTER_NAMESPACE::resampler {
+                                   ^~~~~~~~~~~
+                                    { namespace resampler
+In file included from /Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/iolib/src/main/cpp/player/SampleBuffer.cpp:20:
+/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/oboe/src/flowgraph/resampler/MultiChannelResampler.h:39:36: warning: nested namespace definition is a C++17 extension; define each namespace separately [-Wc++17-extensions]
+namespace RESAMPLER_OUTER_NAMESPACE::resampler {
+                                   ^~~~~~~~~~~
+                                    { namespace resampler
+2 warnings generated.
+[11/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/aaudio/AAudioLoader.cpp.o
+[12/81] Building CXX object CMakeFiles/parselib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/parselib/src/main/cpp/wav/WavStreamReader.cpp.o
+[13/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/AdpfWrapper.cpp.o
+[14/81] Linking CXX static library libparselib.a
+[15/81] Building CXX object CMakeFiles/oboemusicplayerandrecorder.dir/AudioEngine.cpp.o
+[16/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/AudioSourceCaller.cpp.o
+[17/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/FixedBlockAdapter.cpp.o
+[18/81] Building CXX object CMakeFiles/oboemusicplayerandrecorder.dir/oboemusicplayerandrecorder.cpp.o
+[19/81] Building CXX object CMakeFiles/iolib.dir/Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/iolib/src/main/cpp/player/SimpleMultiPlayer.cpp.o
+[20/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/FixedBlockReader.cpp.o
+[21/81] Linking CXX static library libiolib.a
+[22/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/AudioStream.cpp.o
+[23/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/FixedBlockWriter.cpp.o
+[24/81] Building CXX object CMakeFiles/oboemusicplayerandrecorder.dir/LiveEffectEngine.cpp.o
+[25/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/aaudio/AudioStreamAAudio.cpp.o
+[26/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/AudioStreamBuilder.cpp.o
+[27/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/FilterAudioStream.cpp.o
+[28/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/LatencyTuner.cpp.o
+[29/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/OboeExtensions.cpp.o
+[30/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/fifo/FifoBuffer.cpp.o
+[31/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/DataConversionFlowGraph.cpp.o
+[32/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/fifo/FifoController.cpp.o
+[33/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/SourceFloatCaller.cpp.o
+[34/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/fifo/FifoControllerIndirect.cpp.o
+[35/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/SourceI16Caller.cpp.o
+[36/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/SourceI32Caller.cpp.o
+[37/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/fifo/FifoControllerBase.cpp.o
+[38/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/SourceI24Caller.cpp.o
+[39/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/FlowGraphNode.cpp.o
+[40/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/ChannelCountConverter.cpp.o
+[41/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/ClipToRange.cpp.o
+[42/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/Limiter.cpp.o
+[43/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/QuirksManager.cpp.o
+[44/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/MonoToMultiConverter.cpp.o
+[45/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/MonoBlend.cpp.o
+[46/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/ManyToMultiConverter.cpp.o
+[47/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/MultiToManyConverter.cpp.o
+[48/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/RampLinear.cpp.o
+[49/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/MultiToMonoConverter.cpp.o
+[50/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SinkFloat.cpp.o
+[51/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SinkI24.cpp.o
+[52/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SinkI16.cpp.o
+[53/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/Utilities.cpp.o
+[54/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SampleRateConverter.cpp.o
+[55/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SinkI32.cpp.o
+[56/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/resampler/IntegerRatio.cpp.o
+[57/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SourceFloat.cpp.o
+[58/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SinkI8_24.cpp.o
+[59/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SourceI16.cpp.o
+[60/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SourceI32.cpp.o
+[61/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SourceI24.cpp.o
+[62/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/resampler/PolyphaseResamplerMono.cpp.o
+[63/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/resampler/LinearResampler.cpp.o
+[64/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/SourceI8_24.cpp.o
+[65/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/resampler/PolyphaseResampler.cpp.o
+[66/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/resampler/MultiChannelResampler.cpp.o
+[67/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/resampler/PolyphaseResamplerStereo.cpp.o
+[68/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/resampler/SincResamplerStereo.cpp.o
+[69/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/flowgraph/resampler/SincResampler.cpp.o
+[70/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/Trace.cpp.o
+[71/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/Version.cpp.o
+[72/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/opensles/OpenSLESUtilities.cpp.o
+[73/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/opensles/EngineOpenSLES.cpp.o
+[74/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/opensles/AudioStreamBuffered.cpp.o
+[75/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/opensles/AudioOutputStreamOpenSLES.cpp.o
+[76/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/opensles/AudioInputStreamOpenSLES.cpp.o
+[77/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/opensles/OutputMixerOpenSLES.cpp.o
+[78/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/opensles/AudioStreamOpenSLES.cpp.o
+[79/81] Building CXX object oboe-bin/CMakeFiles/oboe.dir/src/common/StabilizedCallback.cpp.o
+[80/81] Linking CXX static library oboe-bin/liboboe.a
+[81/81] Linking CXX shared library /Users/dipaksisodiya/work/rockstar/frontend/oboe-mp3-player/oboemusicplayerandrecorder/build/intermediates/cxx/Debug/535t3e46/obj/armeabi-v7a/liboboemusicplayerandrecorder.so
