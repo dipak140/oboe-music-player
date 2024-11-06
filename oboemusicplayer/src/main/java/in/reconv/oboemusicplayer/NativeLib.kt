@@ -84,6 +84,8 @@ class NativeLib {
     external fun clearOutputReset()
 
     external fun restartStream()
+    external fun pauseTrigger()
+    external fun resumeTrigger()
 
     // External functions for Recording
     external fun create(): Boolean

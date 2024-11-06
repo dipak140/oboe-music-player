@@ -94,7 +94,7 @@ private:
         oboe::AudioStreamBuilder *builder, int32_t sampleRate);
     oboe::AudioStreamBuilder *setupPlaybackStreamParameters(
         oboe::AudioStreamBuilder *builder);
-    void warnIfNotLowLatency(std::shared_ptr<oboe::AudioStream> &stream);
+    void warnIfNotLowLatency(std::shared_ptr<oboe::AudioStream> &audioStream);
     float mVolume = 1.0f;  // Add this line
 
     // WAV file membersf

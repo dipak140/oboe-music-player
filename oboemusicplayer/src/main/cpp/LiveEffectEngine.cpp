@@ -3,7 +3,9 @@
 #include <cstring>
 #include <android/log.h>
 #include "LiveEffectEngine.h"
+#include "../../../oboe/src/common/AudioClock.h"
 #include <chrono>
+#include <inttypes.h>  // For PRId64
 
 namespace little_endian_io
 {
@@ -62,12 +64,19 @@ bool LiveEffectEngine::setEffectOn(bool isOn) {
     return success;
 }
 
-long long currentTimeMillis() {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(
-            std::chrono::system_clock::now().time_since_epoch()
-    ).count();
-}
+//long long currentTimeMillis() {
+//    return std::chrono::duration_cast<std::chrono::milliseconds>(
+//            std::chrono::system_clock::now().time_since_epoch()
+//    ).count();
+//}
 
+long long currentTimeMillis() {
+    struct timespec ts;
+    // Get the time from CLOCK_MONOTONIC
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    // Convert to milliseconds
+    return (ts.tv_sec * 1000LL) + (ts.tv_nsec / 1000000LL);
+}
 void LiveEffectEngine::startRecording(const char * filePath, oboe::InputPreset inputPreset, long startRecordingTimestamp) {
     __android_log_print(ANDROID_LOG_INFO, "OboeAudioRecorder", "Starting recording natively at %s", filePath);
     this->isRecording = true;
@@ -81,6 +90,7 @@ void LiveEffectEngine::startRecording(const char * filePath, oboe::InputPreset i
     builder.setSampleRate(mSampleRate);
     builder.setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Best);
     builder.setAudioApi(oboe::AudioApi::AAudio);
+//    builder.setDataCallback(this);
 
     // Wave file generating stuff (from https://www.cplusplus.com/forum/beginner/166954/)
     int bitsPerSample = 16; // multiple of 8
@@ -142,7 +152,27 @@ void LiveEffectEngine::startRecording(const char * filePath, oboe::InputPreset i
         } while (framesRead != 0);
 
         while (isRecording) {
+
             auto result = stream->read(mybuffer, requestedFrames, kTimeoutValue * 1000);
+            static bool firstFrameHit = false;
+            static int64_t firstFrameTimestamp = 0;
+
+            if (!firstFrameHit) {
+                // Get the current timestamp
+                int64_t framePosition = 0;
+                int64_t presentationTime;
+                oboe::Result results = stream->getTimestamp(CLOCK_MONOTONIC, &framePosition, &presentationTime);
+
+                if (results == oboe::Result::OK) {
+                    firstFrameTimestamp = presentationTime;  // In nanoseconds
+                    __android_log_print(ANDROID_LOG_INFO, "OboeAudio", "First frame timestamp: %" PRId64 " ns", firstFrameTimestamp);
+                    __android_log_print(ANDROID_LOG_INFO, "OboeAudio", "Frame position: %" PRId64 ", Presentation time: %" PRId64 " ns", framePosition, presentationTime);
+                } else {
+                    __android_log_print(ANDROID_LOG_ERROR, "OboeAudio", "Failed to get timestamp: %s", oboe::convertToText(results));
+                }
+
+                firstFrameHit = true;
+            }
 
             // Capture the precise time when the recording starts
             if (!isTimeRecorded){
@@ -289,45 +319,6 @@ void LiveEffectEngine::startRecordingWithoutFile(const char * filePath, const ch
         write_word( f, file_length - 8, 4 );
         f.close();
     }
-}
-
-void LiveEffectEngine::playWavFile(const char *wavFilePath) {
-    __android_log_print(ANDROID_LOG_INFO, "OboeAudioPlayer", "Playing WAV file from %s", wavFilePath);
-
-    std::ifstream wavFile(wavFilePath, std::ios::binary);
-    if (!wavFile.is_open()) {
-        __android_log_print(ANDROID_LOG_ERROR, "OboeAudioPlayer", "Failed to open WAV file");
-        return;
-    }
-
-    // Skip the WAV file header
-    wavFile.seekg(44, std::ios::beg);
-//
-//    // Read the PCM audio data from the file into a buffer
-    std::vector<int16_t> pcmData;
-    int16_t sample;
-    while (wavFile.read(reinterpret_cast<char *>(&sample), sizeof(sample))) {
-        pcmData.push_back(sample);
-    }
-//
-    wavFile.close();
-//
-//    // Initialize and start the playback stream
-//    oboe::AudioStreamBuilder playbackBuilder;
-//    playbackBuilder.setDirection(oboe::Direction::Output)
-//            ->setSampleRate(mSampleRate)
-//            ->setChannelCount(oboe::ChannelCount::Stereo)
-//            ->setFormat(oboe::AudioFormat::I16)
-//            ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
-//            ->setCallback(this);
-//
-//    oboe::Result result = playbackBuilder.openStream(mPlayStream);
-//    if (result == oboe::Result::OK) {
-//        mPlayStream->start();
-//        __android_log_print(ANDROID_LOG_INFO, "OboeAudioPlayer", "Playback started.");
-//    } else {
-//        __android_log_print(ANDROID_LOG_ERROR, "OboeAudioPlayer", "Failed to open playback stream.");
-//    }
 }
 
 
@@ -488,6 +479,23 @@ void LiveEffectEngine::closeStream(std::shared_ptr<oboe::AudioStream> &stream) {
 oboe::DataCallbackResult LiveEffectEngine::onAudioReady(
         oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) {
 
+    static bool firstFrameHit = false;
+    static int64_t firstFrameTimestamp = 0;
+    if (!firstFrameHit) {
+        // Get the current timestamp
+        int64_t framePosition;
+        int64_t presentationTime;
+        oboe::Result result = oboeStream->getTimestamp(CLOCK_MONOTONIC, &framePosition, &presentationTime);
+
+        if (result == oboe::Result::OK) {
+            firstFrameTimestamp = presentationTime;  // In nanoseconds
+            __android_log_print(ANDROID_LOG_INFO, "OboeAudio", "First frame timestamp: %" PRId64 " ns", firstFrameTimestamp);
+        } else {
+            __android_log_print(ANDROID_LOG_ERROR, "OboeAudio", "Failed to get timestamp: %s", oboe::convertToText(result));
+        }
+
+        firstFrameHit = true;
+    }
     if (audioData == nullptr || numFrames <= 0) {
         return oboe::DataCallbackResult::Stop;
     }
@@ -502,8 +510,8 @@ oboe::DataCallbackResult LiveEffectEngine::onAudioReady(
 }
 
 
-void LiveEffectEngine::warnIfNotLowLatency(std::shared_ptr<oboe::AudioStream> &stream) {
-    if (stream->getPerformanceMode() != oboe::PerformanceMode::LowLatency) {
+void LiveEffectEngine::warnIfNotLowLatency(std::shared_ptr<oboe::AudioStream> &audioStream) {
+    if (audioStream->getPerformanceMode() != oboe::PerformanceMode::LowLatency) {
         __android_log_print(ANDROID_LOG_WARN, "LiveEffectEngine", "Stream is NOT low latency.");
     }
 }

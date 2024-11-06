@@ -126,6 +126,14 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_stopTrigger(JNIE
     sDTPlayer.triggerUp(index);
 }
 
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_pauseTrigger(JNIEnv* env) {
+    sDTPlayer.pauseStream();
+}
+
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_resumeTrigger(JNIEnv* env) {
+    sDTPlayer.resumeStream();
+}
+
 /**
  * Native (JNI) implementation of MusicPlayer.getOutputReset()
  */
@@ -314,7 +322,6 @@ Java_in_reconv_oboemusicplayer_NativeLib_startRecordingWithoutFile(JNIEnv *env,
                                                                               jstring music_file_path,
                                                                               jint input_preset_preference,
                                                                               jlong start_recording_time) {
-    // TODO: implement startRecordingWithoutFile()
     if (engine == nullptr) {
         return;
     }
