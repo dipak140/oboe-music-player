@@ -112,6 +112,11 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_unloadWavAssetsN
     sDTPlayer.unloadSampleData();
 }
 
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_seekToPosition(JNIEnv* env, jobject, jlong position) {
+    int64_t seekPositionMillis = position;
+    sDTPlayer.seekTo(seekPositionMillis);
+}
+
 /**
  * Native (JNI) implementation of MusicPlayer.trigger()
  */
