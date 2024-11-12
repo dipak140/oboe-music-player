@@ -180,6 +180,11 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_setGain(
     sDTPlayer.setGain(index, gain);
 }
 
+JNIEXPORT jlong JNICALL Java_in_reconv_oboemusicplayer_NativeLib_getPosition(
+        JNIEnv *env, jobject thiz, jint  index) {
+    return sDTPlayer.getPosition(index);
+}
+
 JNIEXPORT jfloat JNICALL Java_in_reconv_oboemusicplayer_NativeLib_getGain(
         JNIEnv *env, jobject thiz, jint index) {
     return sDTPlayer.getGain(index);

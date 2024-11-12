@@ -87,6 +87,7 @@ class NativeLib {
     external fun pauseTrigger()
     external fun resumeTrigger()
     external fun seekToPosition(position: Long)
+    external fun getPosition(index: Int): Long
 
     // External functions for Recording
     external fun create(): Boolean
