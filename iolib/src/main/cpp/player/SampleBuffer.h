@@ -44,6 +44,9 @@ public:
 
     float* getSampleData() { return mSampleData; }
     int32_t getNumSamples() { return mNumSamples; }
+    int32_t getFrameCount() const;
+
+    float *getPointerToFrame(int32_t frameOffset) const;
 
 protected:
     AudioProperties mAudioProperties;

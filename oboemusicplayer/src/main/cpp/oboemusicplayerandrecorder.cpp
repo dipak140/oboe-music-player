@@ -34,7 +34,7 @@ using namespace parselib;
 static SimpleMultiPlayer sDTPlayer;
 
 JNIEXPORT jstring JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_stringFromJNI(
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
@@ -43,7 +43,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_stringFromJNI(
 
 
 JNIEXPORT jstring JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_onRecordingStarted(
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_onRecordingStarted(
         JNIEnv* env,
         jobject, jstring eventInfo){
     std::string hello = "Hello from C++ 2";
@@ -54,14 +54,14 @@ Java_in_reconv_oboemusicplayer_NativeLib_onRecordingStarted(
 /**
  * Native (JNI) implementation of MusicPlayer.setupAudioStreamNative()
  */
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_setupAudioStreamNative(
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setupAudioStreamNative(
         JNIEnv* env, jobject, jint numChannels) {
     __android_log_print(ANDROID_LOG_INFO, TAG, "%s", "init()");
     sDTPlayer.setupAudioStream(numChannels);
 }
 
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_startAudioStreamNative(
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_startAudioStreamNative(
         JNIEnv *env, jobject thiz) {
     sDTPlayer.startStream();
 }
@@ -69,7 +69,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_startAudioStreamNative(
 /**
  * Native (JNI) implementation of MusicPlayer.teardownAudioStreamNative()
  */
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_teardownAudioStreamNative(JNIEnv* , jobject) {
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_teardownAudioStreamNative(JNIEnv* , jobject) {
     __android_log_print(ANDROID_LOG_INFO, TAG, "%s", "deinit()");
 
     // we know in this case that the sample buffers are all 1-channel, 44.1K
@@ -82,7 +82,7 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_teardownAudioStr
 
 // the trick is to load the wav files before being asked to play, this way we can make sure that the
 // lease possible latency is being introduced.
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_loadWavAssetNative(
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_loadWavAssetNative(
         JNIEnv* env, jobject, jbyteArray bytearray, jint index, jfloat pan) {
     int len = env->GetArrayLength (bytearray);
 
@@ -108,11 +108,11 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_loadWavAssetNati
 /**
  * Native (JNI) implementation of MusicPlayer.unloadWavAssetsNative()
  */
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_unloadWavAssetsNative(JNIEnv* env, jobject) {
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_unloadWavAssetsNative(JNIEnv* env, jobject) {
     sDTPlayer.unloadSampleData();
 }
 
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_seekToPosition(JNIEnv* env, jobject, jlong position) {
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_seekToPosition(JNIEnv* env, jobject, jlong position) {
     int64_t seekPositionMillis = position;
     sDTPlayer.seekTo(seekPositionMillis);
 }
@@ -120,43 +120,43 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_seekToPosition(J
 /**
  * Native (JNI) implementation of MusicPlayer.trigger()
  */
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_trigger(JNIEnv* env, jobject, jint index) {
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_trigger(JNIEnv* env, jobject, jint index) {
     sDTPlayer.triggerDown(index);
 }
 
 /**
  * Native (JNI) implementation of MusicPlayer.trigger()
  */
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_stopTrigger(JNIEnv* env, jobject, jint index) {
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_stopTrigger(JNIEnv* env, jobject, jint index) {
     sDTPlayer.triggerUp(index);
 }
 
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_pauseTrigger(JNIEnv* env) {
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_pauseTrigger(JNIEnv* env) {
     sDTPlayer.pauseStream();
 }
 
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_resumeTrigger(JNIEnv* env) {
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_resumeTrigger(JNIEnv* env) {
     sDTPlayer.resumeStream();
 }
 
 /**
  * Native (JNI) implementation of MusicPlayer.getOutputReset()
  */
-JNIEXPORT jboolean JNICALL Java_in_reconv_oboemusicplayer_NativeLib_getOutputReset(JNIEnv*, jobject) {
+JNIEXPORT jboolean JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getOutputReset(JNIEnv*, jobject) {
     return sDTPlayer.getOutputReset();
 }
 
 /**
  * Native (JNI) implementation of MusicPlayer.clearOutputReset()
  */
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_clearOutputReset(JNIEnv*, jobject) {
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_clearOutputReset(JNIEnv*, jobject) {
     sDTPlayer.clearOutputReset();
 }
 
 /**
  * Native (JNI) implementation of MusicPlayer.restartStream()
  */
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_restartStream(JNIEnv*, jobject) {
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_restartStream(JNIEnv*, jobject) {
     sDTPlayer.resetAll();
     if (sDTPlayer.openStream() && sDTPlayer.startStream()){
         __android_log_print(ANDROID_LOG_INFO, TAG, "openStream successful");
@@ -165,27 +165,27 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_restartStream(JN
     }
 }
 
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_setPan(
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setPan(
         JNIEnv *env, jobject thiz, jint index, jfloat pan) {
     sDTPlayer.setPan(index, pan);
 }
 
-JNIEXPORT jfloat JNICALL Java_in_reconv_oboemusicplayer_NativeLib_getPan(
+JNIEXPORT jfloat JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getPan(
         JNIEnv *env, jobject thiz, jint  index) {
     return sDTPlayer.getPan(index);
 }
 
-JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeLib_setGain(
+JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setGain(
         JNIEnv *env, jobject thiz, jint  index, jfloat gain) {
     sDTPlayer.setGain(index, gain);
 }
 
-JNIEXPORT jlong JNICALL Java_in_reconv_oboemusicplayer_NativeLib_getPosition(
+JNIEXPORT jlong JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getPosition(
         JNIEnv *env, jobject thiz, jint  index) {
     return sDTPlayer.getPosition(index);
 }
 
-JNIEXPORT jfloat JNICALL Java_in_reconv_oboemusicplayer_NativeLib_getGain(
+JNIEXPORT jfloat JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getGain(
         JNIEnv *env, jobject thiz, jint index) {
     return sDTPlayer.getGain(index);
 }
@@ -197,7 +197,7 @@ JNIEXPORT jfloat JNICALL Java_in_reconv_oboemusicplayer_NativeLib_getGain(
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_create(JNIEnv *env, jobject thiz) {
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_create(JNIEnv *env, jobject thiz) {
     if (engine == nullptr) {
         engine = new LiveEffectEngine();
     }
@@ -208,7 +208,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_create(JNIEnv *env, jobject thiz) {
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_isAAudioRecommended(JNIEnv *env, jobject thiz) {
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_isAAudioRecommended(JNIEnv *env, jobject thiz) {
     // TODO: implement isAAudioRecommended()
     if (engine == nullptr) {
         return JNI_FALSE;
@@ -217,7 +217,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_isAAudioRecommended(JNIEnv *env, jobjec
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_setAPI(JNIEnv *env, jobject thiz,
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setAPI(JNIEnv *env, jobject thiz,
                                                            jint api_type) {
     if (engine == nullptr) {
         return JNI_FALSE;
@@ -240,7 +240,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_setAPI(JNIEnv *env, jobject thiz,
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_setEffectOn(JNIEnv *env, jobject thiz,
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setEffectOn(JNIEnv *env, jobject thiz,
                                                                 jboolean is_effect_on) {
     if (engine == nullptr){
         return JNI_FALSE;
@@ -251,7 +251,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_setEffectOn(JNIEnv *env, jobject thiz,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_setRecordingDeviceId(JNIEnv *env, jobject thiz,
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setRecordingDeviceId(JNIEnv *env, jobject thiz,
                                                                          jint device_id) {
     if (engine == nullptr) {
         return;
@@ -261,7 +261,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_setRecordingDeviceId(JNIEnv *env, jobje
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_setPlaybackDeviceId(JNIEnv *env, jobject thiz,
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setPlaybackDeviceId(JNIEnv *env, jobject thiz,
                                                                         jint device_id) {
     if (engine == nullptr) {
         return;
@@ -271,7 +271,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_setPlaybackDeviceId(JNIEnv *env, jobjec
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_delete(JNIEnv *env, jobject thiz) {
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_delete(JNIEnv *env, jobject thiz) {
     // TODO: implement delete()
     if(engine){
         engine ->setEffectOn(false);
@@ -282,7 +282,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_delete(JNIEnv *env, jobject thiz) {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_native_1setDefaultStreamValues(JNIEnv *env,
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_native_1setDefaultStreamValues(JNIEnv *env,
                                                                                    jobject thiz,
                                                                                    jint default_sample_rate,
                                                                                    jint default_frames_per_burst) {
@@ -292,14 +292,14 @@ Java_in_reconv_oboemusicplayer_NativeLib_native_1setDefaultStreamValues(JNIEnv *
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_setVolume(JNIEnv *env, jobject thiz,
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setVolume(JNIEnv *env, jobject thiz,
                                                               jfloat volume) {
     engine ->setVolume(volume);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_startRecording(JNIEnv *env, jobject thiz,
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_startRecording(JNIEnv *env, jobject thiz,
                                                                    jstring full_path_tofile,
                                                                    jint input_preset_preference,
                                                                    jlong start_recording_time) {
@@ -326,7 +326,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_startRecording(JNIEnv *env, jobject thi
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_startRecordingWithoutFile(JNIEnv *env,
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_startRecordingWithoutFile(JNIEnv *env,
                                                                               jobject thiz,
                                                                               jstring full_path_tofile,
                                                                               jstring music_file_path,
@@ -355,7 +355,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_startRecordingWithoutFile(JNIEnv *env,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_stopRecording(JNIEnv *env, jobject thiz) {
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_stopRecording(JNIEnv *env, jobject thiz) {
     if (engine == nullptr) {
         return;
     }
@@ -365,7 +365,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_stopRecording(JNIEnv *env, jobject thiz
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_resumeRecording(JNIEnv *env, jobject thiz) {
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_resumeRecording(JNIEnv *env, jobject thiz) {
     if (engine == nullptr) {
         return;
     }
@@ -374,7 +374,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_resumeRecording(JNIEnv *env, jobject th
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_pauseRecording(JNIEnv *env, jobject thiz) {
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_pauseRecording(JNIEnv *env, jobject thiz) {
     if (engine == nullptr) {
         return;
     }
@@ -383,7 +383,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_pauseRecording(JNIEnv *env, jobject thi
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_getRecordingDelay(JNIEnv *env, jobject thiz) {
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getRecordingDelay(JNIEnv *env, jobject thiz) {
     if (engine == nullptr) {
         return 0;
     }
@@ -392,7 +392,7 @@ Java_in_reconv_oboemusicplayer_NativeLib_getRecordingDelay(JNIEnv *env, jobject 
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeLib_setCallbackObject(JNIEnv *env, jobject thiz,
+Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setCallbackObject(JNIEnv *env, jobject thiz,
                                                                       jobject callback_object) {
     if (g_callbackObject != nullptr) {
         env->DeleteGlobalRef(g_callbackObject);

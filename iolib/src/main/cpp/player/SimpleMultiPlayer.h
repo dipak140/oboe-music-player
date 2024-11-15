@@ -69,6 +69,8 @@ public:
     float getGain(int index);
     void pauseStream();
     void resumeStream();
+    void seekTo(int64_t positionMillis);
+    int64_t getPosition(int index);
 
 private:
     class MyDataCallback : public oboe::AudioStreamDataCallback {

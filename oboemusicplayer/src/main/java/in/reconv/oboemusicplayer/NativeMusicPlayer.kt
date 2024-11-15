@@ -5,9 +5,11 @@ import android.content.res.AssetManager
 import android.media.AudioManager
 import android.os.Build
 import android.util.Log
+import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
 
-class NativeLib {
+class NativeMusicPlayer {
     /**
      * A native method that is implemented by the 'oboemusicplayerandrecorder' native library,
      * which is packaged with this application.
@@ -39,6 +41,30 @@ class NativeLib {
             Log.i(TAG, "IOException$ex")
         }
     }
+
+    public fun loadWavFile(filePath: String, index: Int, pan: Float) {
+        try {
+            // Open the file using FileInputStream
+            val file = File(filePath)
+            val dataStream = FileInputStream(file)
+
+            // Get the file size
+            val dataLen = file.length().toInt()
+
+            // Read the file data into a byte array
+            val dataBytes = ByteArray(dataLen)
+            dataStream.read(dataBytes, 0, dataLen)
+
+            // Call your native function with the data
+            loadWavAssetNative(dataBytes, index, pan)
+
+            // Close the stream
+            dataStream.close()
+        } catch (ex: IOException) {
+            Log.i(TAG, "IOException: $ex")
+        }
+    }
+
 
     fun setupAudioStream() {
         setupAudioStreamNative(NUM_PLAY_CHANNELS)

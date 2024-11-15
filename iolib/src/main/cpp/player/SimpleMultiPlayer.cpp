@@ -19,6 +19,7 @@
 // parselib includes
 #include <stream/MemInputStream.h>
 #include <wav/WavStreamReader.h>
+#include <inttypes.h>
 
 // local includes
 #include "OneShotSampleSource.h"
@@ -42,6 +43,29 @@ DataCallbackResult SimpleMultiPlayer::MyDataCallback::onAudioReady(AudioStream *
                                                                    int32_t numFrames) {
 
     StreamState streamState = oboeStream->getState();
+
+
+    static bool firstFrameHit = false;
+    static int64_t firstFrameTimestamp = 0;
+
+    if (!firstFrameHit) {
+        // Get the current timestamp
+        int64_t framePosition;
+        int64_t presentationTime;
+        oboe::Result result = oboeStream->getTimestamp(CLOCK_MONOTONIC, &framePosition, &presentationTime);
+
+        if (result == oboe::Result::OK) {
+            firstFrameTimestamp = presentationTime;  // In nanoseconds
+            __android_log_print(ANDROID_LOG_INFO, "OboeAudio", "First frame timestamp music: %" PRId64 " ns", firstFrameTimestamp);
+        } else {
+            __android_log_print(ANDROID_LOG_ERROR, "OboeAudio", "Failed to get timestamp: %s", oboe::convertToText(result));
+        }
+
+        firstFrameHit = true;
+    }
+
+
+
     if (streamState != StreamState::Open && streamState != StreamState::Started) {
         __android_log_print(ANDROID_LOG_ERROR, TAG, "  streamState:%d", streamState);
     }
@@ -76,6 +100,32 @@ void SimpleMultiPlayer::MyErrorCallback::onErrorAfterClose(AudioStream *oboeStre
     if (mParent->openStream() && mParent->startStream()) {
         mParent->mOutputReset = true;
     }
+}
+
+    void SimpleMultiPlayer::seekTo(int64_t positionMillis) {
+        if (positionMillis < 0) {
+            __android_log_print(ANDROID_LOG_ERROR, TAG,
+                                "seekTo: Invalid position %lld ms", positionMillis);
+            return;
+        }
+
+        // Calculate the frame offset for the given position
+        int64_t frameOffset = (positionMillis * mSampleRate) / 1000;
+
+        __android_log_print(ANDROID_LOG_INFO, TAG,
+                            "seekTo: Seeking to %lld ms (%lld frames)",
+                            positionMillis, frameOffset);
+
+        // Apply the seek to all active sample sources
+        for (int32_t i = 0; i < mNumSampleBuffers; ++i) {
+            if (mSampleSources[i]->isPlaying()) {
+                mSampleSources[i]->seekToFrame(frameOffset);
+            }
+        }
+    }
+
+    int64_t SimpleMultiPlayer::getPosition(int index){
+        return mSampleSources[index]->getCurrentPositionInMillis(mSampleRate, mChannelCount);
 }
 
 bool SimpleMultiPlayer::openStream() {
@@ -170,20 +220,21 @@ void SimpleMultiPlayer::teardownAudioStream() {
 void SimpleMultiPlayer::pauseStream(){
     __android_log_print(ANDROID_LOG_INFO, TAG, "pauseStream()");
     if (mAudioStream && !mIsStreamPaused) {
+        __android_log_print(ANDROID_LOG_INFO, TAG, "pauseStream() called");
         mAudioStream->pause();
         mIsStreamPaused = true;
         // More stuff needed to be done here
     }
 }
 
-void SimpleMultiPlayer::resumeStream(){
-    __android_log_print(ANDROID_LOG_INFO, TAG, "resumeStream()");
-    if (mAudioStream && mIsStreamPaused) {
-        mAudioStream->requestStart();
-        mIsStreamPaused = false;
-        // More stuff needed to be done here
-    }
+void SimpleMultiPlayer::resumeStream() {
+        __android_log_print(ANDROID_LOG_INFO, TAG, "resumeStream()");
+        if (mAudioStream && mIsStreamPaused) {
+            mAudioStream->requestStart();  // Restart the stream
+            mIsStreamPaused = false;       // Reset paused flag
+        }
 }
+
 
 void SimpleMultiPlayer::addSampleSource(SampleSource* source, SampleBuffer* buffer) {
     buffer->resampleData(mSampleRate);
@@ -210,6 +261,15 @@ void SimpleMultiPlayer::unloadSampleData() {
 
 void SimpleMultiPlayer::triggerDown(int32_t index) {
     if (index < mNumSampleBuffers) {
+        // print timestamp of sample source
+        struct timespec ts;
+        // Get the time from CLOCK_MONOTONIC
+        clock_gettime(CLOCK_MONOTONIC, &ts);
+        // Convert to milliseconds
+        long long currentTimeMillis = (ts.tv_sec * 1000LL) + (ts.tv_nsec / 1000000LL);
+        __android_log_print(ANDROID_LOG_INFO, TAG, "timestamp at triggerDown(): %lld", currentTimeMillis);
+        __android_log_print(ANDROID_LOG_INFO, TAG, "triggerDown(%d)", index);
+
         mSampleSources[index]->setPlayMode();
     }
 }

@@ -18,12 +18,31 @@
 
 // Resampler Includes
 #include <resampler/MultiChannelResampler.h>
+#include <android/log.h>
 
 #include "wav/WavStreamReader.h"
 
 using namespace RESAMPLER_OUTER_NAMESPACE::resampler;
 
 namespace iolib {
+
+int32_t SampleBuffer::getFrameCount() const {
+        // Total frames = Total samples / Channels
+        return mNumSamples / mAudioProperties.channelCount;
+}
+
+float* SampleBuffer::getPointerToFrame(int32_t frameOffset) const {
+        // Validate frame offset
+    int32_t totalFrames = getFrameCount();
+    if (frameOffset < 0 || frameOffset >= totalFrames) {
+        __android_log_print(ANDROID_LOG_ERROR, "SampleBuffer",
+                            "getPointerToFrame: Invalid frame offset %d", frameOffset);
+        return nullptr;
+    }
+
+    // Calculate the pointer to the start of the desired frame
+    return mSampleData + (frameOffset * mAudioProperties.channelCount);
+}
 
 void SampleBuffer::loadSampleData(parselib::WavStreamReader* reader) {
     mAudioProperties.channelCount = reader->getNumChannels();
