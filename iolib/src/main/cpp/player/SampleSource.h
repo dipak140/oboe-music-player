@@ -18,6 +18,7 @@
 #define _PLAYER_SAMPLESOURCE_
 
 #include <cstdint>
+#include <android/log.h>
 
 #include "DataSource.h"
 
@@ -73,6 +74,75 @@ public:
         return mGain;
     }
 
+    void seekToFrame(int32_t frameOffset) {
+        if (!mSampleBuffer) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource", "seekToFrame: Sample buffer is null");
+            return;
+        }
+
+        float* newFramePointer = mSampleBuffer->getPointerToFrame(frameOffset);
+        if (!newFramePointer) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource",
+                                "seekToFrame: Could not set frame offset %d", frameOffset);
+            return;
+        }
+
+        // Update the current frame index and internal playback pointer
+        mCurSampleIndex = frameOffset;
+
+        __android_log_print(ANDROID_LOG_INFO, "SampleSource",
+                            "seekToFrame: Successfully set to frame %d", frameOffset);
+    }
+
+    int64_t getCurrentPositionInMillis(int32_t sampleRate, int32_t channelCount) const {
+        if (!mSampleBuffer) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource", "getCurrentPositionInMillis: Sample buffer is null");
+            return 0;
+        }
+
+        // Retrieve sample rate and channel count from SampleBuffer
+        if (sampleRate <= 0 || channelCount <= 0) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource",
+                                "getCurrentPositionInMillis: Invalid sample rate (%d) or channel count (%d)",
+                                sampleRate, channelCount);
+            return 0;
+        }
+
+        // Calculate the playback position in milliseconds
+        int64_t currentTimeMillis = (static_cast<int64_t>(mCurSampleIndex) * 1000) /
+                                    (sampleRate * channelCount);
+
+        return currentTimeMillis;
+    }
+
+
+    int64_t getDurationInMillis(int32_t sampleRate, int32_t channelCount) {
+        if (!mSampleBuffer) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource", "getDurationInMillis: Sample buffer is null");
+            return 0;
+        }
+
+        if (sampleRate <= 0 || channelCount <= 0) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource",
+                                "getDurationInMillis: Invalid sample rate (%d) or channel count (%d)",
+                                sampleRate, channelCount);
+            return 0;
+        }
+
+        // Retrieve the total number of samples from the SampleBuffer
+        int64_t totalSamples = mSampleBuffer->getTotalSamples();
+        if (totalSamples <= 0) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource",
+                                "getDurationInMillis: Invalid total sample count");
+            return 0;
+        }
+
+        // Calculate the duration in milliseconds
+        int64_t durationMillis = (totalSamples * 1000) / (sampleRate * channelCount);
+
+        return durationMillis;
+    }
+
 protected:
     SampleBuffer    *mSampleBuffer;
 
@@ -97,6 +167,7 @@ private:
         mRightGain = rightPan * mGain;
         mLeftGain = (1.0 - rightPan) * mGain;    }
 };
+
 
 } // namespace wavlib
 

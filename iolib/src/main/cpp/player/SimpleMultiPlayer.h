@@ -38,6 +38,7 @@ public:
 
     bool openStream();
     bool startStream();
+    bool  firstFrameHit = false;
 
     int getSampleRate() { return mSampleRate; }
 
@@ -69,6 +70,14 @@ public:
     float getGain(int index);
     void pauseStream();
     void resumeStream();
+    void seekTo(int64_t positionMillis);
+    int64_t getPosition(int index);
+    int64_t getDuration();
+    int64_t getFramePosition();
+    int64_t getFrameTimeStamp();
+    int64_t framePosition = 0;
+    int64_t presentationTime = 0;
+    int getAudioSessionId();
 
 private:
     class MyDataCallback : public oboe::AudioStreamDataCallback {

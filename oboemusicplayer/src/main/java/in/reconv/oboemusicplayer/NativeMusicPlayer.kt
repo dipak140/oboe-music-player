@@ -5,16 +5,19 @@ import android.content.res.AssetManager
 import android.media.AudioManager
 import android.os.Build
 import android.util.Log
+import java.io.File
+import java.io.FileInputStream
 import java.io.IOException
 
-class NativeLib {
+class NativeMusicPlayer {
     /**
      * A native method that is implemented by the 'oboemusicplayerandrecorder' native library,
      * which is packaged with this application.
      */
-    external fun stringFromJNI(): String
 
     external fun onRecordingStarted(eventInfo: String): String
+
+    external fun createPlayer(): Boolean
 
     companion object {
         val NUM_PLAY_CHANNELS: Int = 2
@@ -40,6 +43,30 @@ class NativeLib {
         }
     }
 
+    public fun loadWavFile(filePath: String, index: Int, pan: Float) {
+        try {
+            // Open the file using FileInputStream
+            val file = File(filePath)
+            val dataStream = FileInputStream(file)
+
+            // Get the file size
+            val dataLen = file.length().toInt()
+
+            // Read the file data into a byte array
+            val dataBytes = ByteArray(dataLen)
+            dataStream.read(dataBytes, 0, dataLen)
+
+            // Call your native function with the data
+            loadWavAssetNative(dataBytes, index, pan)
+
+            // Close the stream
+            dataStream.close()
+        } catch (ex: IOException) {
+            Log.i(TAG, "IOException: $ex")
+        }
+    }
+
+
     fun setupAudioStream() {
         setupAudioStreamNative(NUM_PLAY_CHANNELS)
     }
@@ -51,6 +78,12 @@ class NativeLib {
     fun teardownAudioStream() {
         teardownAudioStreamNative()
     }
+
+    fun getDuration(): Long{
+        return getDurationNative()
+    }
+
+    private external fun getDurationNative(): Long
 
     // asset-based samples
     fun loadWavAssets(assetMgr: AssetManager) {
@@ -84,6 +117,10 @@ class NativeLib {
     external fun clearOutputReset()
 
     external fun restartStream()
+    external fun pauseTrigger()
+    external fun resumeTrigger()
+    external fun seekToPosition(position: Long)
+    external fun getPosition(index: Int): Long
 
     // External functions for Recording
     external fun create(): Boolean
@@ -101,18 +138,17 @@ class NativeLib {
         startRecordingTime: Long
     )
 
-    external fun startRecordingWithoutFile(
-        fullPathTofile: String?,
-        musicFilePath: String?,
-        inputPresetPreference: Int,
-        startRecordingTime: Long
-    )
-
     external fun stopRecording()
     external fun resumeRecording()
     external fun pauseRecording()
     external fun getRecordingDelay(): Int
+    external fun getMusicPlayerTimeStamp(): Long
+    external fun getRecorderTimeStamp(): Long
+    external fun getMusicPlayerFramePosition(): Long
+    external fun getRecorderFramePosition(): Long
     external fun setCallbackObject(callbackObject: Any?)
+    external fun getPlayerAudioSessionId(): Int
+    external fun getRecorderAudioSessionId(): Int
     fun setDefaultStreamValues(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             val myAudioMgr = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
