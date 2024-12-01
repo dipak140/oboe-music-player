@@ -52,7 +52,7 @@ publishing {
         release(MavenPublication) {
             groupId = 'in.reconv'
             artifactId = 'oboemusicplayerandrecorder'
-            version = '0.1.14'
+            version = '0.1.15'
 
             afterEvaluate {
                 from components.release
