@@ -2,6 +2,8 @@ Oboe Samples
 ==============
 These samples demonstrate how to use the Oboe library:
 
+./gradlew --info publishToMavenLocal
+
 This project implements a multi-sample audio player using the Oboe audio library for Android. 
 It supports playing multiple audio samples simultaneously with low-latency performance, 
 and now includes the capability to pause and resume both the entire audio stream and individual audio samples.

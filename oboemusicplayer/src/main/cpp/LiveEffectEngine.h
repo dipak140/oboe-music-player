@@ -34,9 +34,12 @@ public:
     void setPlaybackDeviceId(int32_t deviceId);
     oboe::AudioStream *stream{};
     bool isRecording = true;
+    bool firstFrameHit = false;
     bool isPaused = false;
     bool isTimeRecorded = false;
     int startRecordingDelay = 0;
+    int64_t framePosition = 0;
+    int64_t presentationTime = 0;
 
     /**
      * @param isOn
@@ -45,7 +48,6 @@ public:
     bool setEffectOn(bool isOn);
     // New methods for recording
     void startRecording(const char * filePath, oboe::InputPreset inputPreset, long startRecordingTimestamp);
-    void startRecordingWithoutFile(const char *filePath, const char *musicPath,oboe::InputPreset inputPreset, long startRecordingTimestamp);
     void stopRecording();
 
     /*
@@ -60,6 +62,9 @@ public:
     void pauseRecording();
     void resumeRecording();
     int getStartRecordingDelay();
+    int64_t getFramePosition();
+    int64_t getFrameTimeStamp();
+    jint getAudioSessionId();
 
 
 private:
@@ -108,8 +113,6 @@ private:
     void StartRecordingNative(const char *filePath);
     void playWavFile(const char *wavFilePath);
     void callJavaMethod(const char *methodName, const char *methodSignature, const char *str);
-
-
     void stopPlayback();
 };
 

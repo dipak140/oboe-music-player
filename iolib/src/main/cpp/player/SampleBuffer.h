@@ -48,6 +48,8 @@ public:
 
     float *getPointerToFrame(int32_t frameOffset) const;
 
+    int64_t getTotalSamples();
+
 protected:
     AudioProperties mAudioProperties;
 

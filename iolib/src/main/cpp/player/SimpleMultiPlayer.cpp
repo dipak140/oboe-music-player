@@ -20,10 +20,13 @@
 #include <stream/MemInputStream.h>
 #include <wav/WavStreamReader.h>
 #include <inttypes.h>
+#include <chrono>
 
 // local includes
 #include "OneShotSampleSource.h"
 #include "SimpleMultiPlayer.h"
+#include "../../../../../oboemusicplayer/oboe/include/oboe/Definitions.h"
+#include "../../../../../oboemusicplayer/oboe/include/oboe/AudioStream.h"
 
 static const char* TAG = "SimpleMultiPlayer";
 
@@ -44,27 +47,13 @@ DataCallbackResult SimpleMultiPlayer::MyDataCallback::onAudioReady(AudioStream *
 
     StreamState streamState = oboeStream->getState();
 
-
-    static bool firstFrameHit = false;
-    static int64_t firstFrameTimestamp = 0;
-
-    if (!firstFrameHit) {
+    if (!this->mParent->firstFrameHit) {
         // Get the current timestamp
-        int64_t framePosition;
-        int64_t presentationTime;
-        oboe::Result result = oboeStream->getTimestamp(CLOCK_MONOTONIC, &framePosition, &presentationTime);
-
-        if (result == oboe::Result::OK) {
-            firstFrameTimestamp = presentationTime;  // In nanoseconds
-            __android_log_print(ANDROID_LOG_INFO, "OboeAudio", "First frame timestamp music: %" PRId64 " ns", firstFrameTimestamp);
-        } else {
-            __android_log_print(ANDROID_LOG_ERROR, "OboeAudio", "Failed to get timestamp: %s", oboe::convertToText(result));
-        }
-
-        firstFrameHit = true;
+        oboe::Result result = oboeStream->getTimestamp(CLOCK_BOOTTIME, &mParent->framePosition, &mParent->presentationTime);
+        mParent->presentationTime =std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        mParent->framePosition = numFrames;
+        this->mParent->firstFrameHit = true;
     }
-
-
 
     if (streamState != StreamState::Open && streamState != StreamState::Started) {
         __android_log_print(ANDROID_LOG_ERROR, TAG, "  streamState:%d", streamState);
@@ -93,6 +82,12 @@ DataCallbackResult SimpleMultiPlayer::MyDataCallback::onAudioReady(AudioStream *
     return DataCallbackResult::Continue;
 }
 
+    long long currentTimeMillis() {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch()
+        ).count();
+    }
+
 void SimpleMultiPlayer::MyErrorCallback::onErrorAfterClose(AudioStream *oboeStream, Result error) {
     __android_log_print(ANDROID_LOG_INFO, TAG, "==== onErrorAfterClose() error:%d", error);
 
@@ -102,6 +97,16 @@ void SimpleMultiPlayer::MyErrorCallback::onErrorAfterClose(AudioStream *oboeStre
     }
 }
 
+int64_t SimpleMultiPlayer::getFramePosition() {
+    return framePosition;
+}
+
+
+int64_t SimpleMultiPlayer::getFrameTimeStamp() {
+    return presentationTime;
+}
+
+
     void SimpleMultiPlayer::seekTo(int64_t positionMillis) {
         if (positionMillis < 0) {
             __android_log_print(ANDROID_LOG_ERROR, TAG,
@@ -109,8 +114,7 @@ void SimpleMultiPlayer::MyErrorCallback::onErrorAfterClose(AudioStream *oboeStre
             return;
         }
 
-        // Calculate the frame offset for the given position
-        int64_t frameOffset = (positionMillis * mSampleRate) / 1000;
+        int64_t frameOffset = (positionMillis * mSampleRate * mChannelCount) / 1000;
 
         __android_log_print(ANDROID_LOG_INFO, TAG,
                             "seekTo: Seeking to %lld ms (%lld frames)",
@@ -126,6 +130,14 @@ void SimpleMultiPlayer::MyErrorCallback::onErrorAfterClose(AudioStream *oboeStre
 
     int64_t SimpleMultiPlayer::getPosition(int index){
         return mSampleSources[index]->getCurrentPositionInMillis(mSampleRate, mChannelCount);
+}
+
+int64_t SimpleMultiPlayer::getDuration(){
+    return mSampleSources[0]->getDurationInMillis(mSampleRate, mChannelCount);
+}
+
+int SimpleMultiPlayer::getAudioSessionId() {
+    return mAudioStream->getSessionId();
 }
 
 bool SimpleMultiPlayer::openStream() {
@@ -209,6 +221,7 @@ void SimpleMultiPlayer::setupAudioStream(int32_t channelCount) {
 
 void SimpleMultiPlayer::teardownAudioStream() {
     __android_log_print(ANDROID_LOG_INFO, TAG, "teardownAudioStream()");
+    this->firstFrameHit = false;
     // tear down the player
     if (mAudioStream) {
         mAudioStream->stop();
@@ -222,6 +235,7 @@ void SimpleMultiPlayer::pauseStream(){
     if (mAudioStream && !mIsStreamPaused) {
         __android_log_print(ANDROID_LOG_INFO, TAG, "pauseStream() called");
         mAudioStream->pause();
+        mAudioStream->flush(); // If available, clear pending buffers
         mIsStreamPaused = true;
         // More stuff needed to be done here
     }
@@ -275,6 +289,7 @@ void SimpleMultiPlayer::triggerDown(int32_t index) {
 }
 
 void SimpleMultiPlayer::triggerUp(int32_t index) {
+    this->firstFrameHit = false;
     if (index < mNumSampleBuffers) {
         mSampleSources[index]->setStopMode();
     }

@@ -80,7 +80,6 @@ public:
             return;
         }
 
-        // Get pointer to the desired frame
         float* newFramePointer = mSampleBuffer->getPointerToFrame(frameOffset);
         if (!newFramePointer) {
             __android_log_print(ANDROID_LOG_ERROR, "SampleSource",
@@ -116,6 +115,33 @@ public:
         return currentTimeMillis;
     }
 
+
+    int64_t getDurationInMillis(int32_t sampleRate, int32_t channelCount) {
+        if (!mSampleBuffer) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource", "getDurationInMillis: Sample buffer is null");
+            return 0;
+        }
+
+        if (sampleRate <= 0 || channelCount <= 0) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource",
+                                "getDurationInMillis: Invalid sample rate (%d) or channel count (%d)",
+                                sampleRate, channelCount);
+            return 0;
+        }
+
+        // Retrieve the total number of samples from the SampleBuffer
+        int64_t totalSamples = mSampleBuffer->getTotalSamples();
+        if (totalSamples <= 0) {
+            __android_log_print(ANDROID_LOG_ERROR, "SampleSource",
+                                "getDurationInMillis: Invalid total sample count");
+            return 0;
+        }
+
+        // Calculate the duration in milliseconds
+        int64_t durationMillis = (totalSamples * 1000) / (sampleRate * channelCount);
+
+        return durationMillis;
+    }
 
 protected:
     SampleBuffer    *mSampleBuffer;

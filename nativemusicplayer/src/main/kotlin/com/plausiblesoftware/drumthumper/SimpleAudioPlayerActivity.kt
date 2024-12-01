@@ -14,6 +14,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
 import `in`.reconv.oboemusicplayer.DuplexStreamForegroundService
@@ -22,12 +25,13 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.lang.Thread.sleep
 
 class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
     private val TAG = "SimpleAudioPlayerActivity"
     private var mAudioMgr: AudioManager? = null
-    private var nativeKaraokePlayerWithOboe = KaraokePlayerWithOboe(this)
+    private var nativeNativeKaraokePlayer = NativeKaraokePlayer(this)
     private lateinit var gainSeekBar: SeekBar
     private lateinit var fileSpinner: Spinner
     private lateinit var wavFileList: ArrayList<String> // List of available WAV files in assets
@@ -48,12 +52,14 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
             requestPermissions()
         }
 
+        lifecycle.addObserver(nativeNativeKaraokePlayer as LifecycleObserver)
+
         // Setup oboe recording and start foreground service
         val externalDirectory = getExternalFilesDir(Environment.DIRECTORY_MUSIC)
-        val outputFile = File(externalDirectory, "Karoke_aaj_se_teri.wav");
+        val outputFile = File(externalDirectory, "Karoke_tum_he_ho.wav");
         Log.d("RANDOM", "outputFile: ${outputFile.absolutePath}")
         println(outputFile.absolutePath)
-        nativeKaraokePlayerWithOboe.initPlayer("RANDOM", outputFile.absolutePath, false, this)
+        nativeNativeKaraokePlayer.initPlayer("RANDOM", outputFile.absolutePath, false)
 
         volumeControlStream = AudioManager.STREAM_MUSIC
 
@@ -73,9 +79,9 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    val newPosition = (nativeKaraokePlayerWithOboe.getCurrentPosition() ?: 0) * progress / 100
+                    val newPosition = (nativeNativeKaraokePlayer.getCurrentPosition() ?: 0) * progress / 100
                     println("newPosition: $newPosition")
-                    nativeKaraokePlayerWithOboe.playerSeekTo(newPosition)
+                    nativeNativeKaraokePlayer.playerSeekTo(newPosition)
                 }
             }
 
@@ -95,20 +101,21 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
                 CoroutineScope(Dispatchers.IO).launch {
                     // Start recording and play audio simultaneously
                     startRecordingAndPlaySample()
+                    println("Started recording and playing audio "+ nativeNativeKaraokePlayer.getTotalDuration())
                 }
             }
         }
 
         val pauseButton = findViewById<Button>(R.id.pauseButton)
         pauseButton.setOnClickListener {
-            nativeKaraokePlayerWithOboe.pauseMusic()
-            nativeKaraokePlayerWithOboe.pauseRecording()
+            nativeNativeKaraokePlayer.pauseMusic()
+            nativeNativeKaraokePlayer.pauseRecording()
         }
 
         val resumeButton = findViewById<Button>(R.id.resumeButton)
         resumeButton.setOnClickListener {
-            nativeKaraokePlayerWithOboe.playMusic()
-            nativeKaraokePlayerWithOboe.resumeRecording()
+            nativeNativeKaraokePlayer.resumeMusic()
+            nativeNativeKaraokePlayer.resumeRecording()
         }
 
         val stopButton = findViewById<Button>(R.id.stopButton)
@@ -133,7 +140,9 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
                 // No file selected
             }
         }
+        lifecycle.addObserver(nativeNativeKaraokePlayer)
     }
+
 
     private fun hasPermissions(): Boolean {
         return ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED &&
@@ -157,7 +166,7 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
         CoroutineScope(Dispatchers.Main).launch {
             while (true) {
                 if (!isUserSeeking) {
-                    seekBar.progress = nativeKaraokePlayerWithOboe.getCurrentPosition().toInt()/1000;
+                    seekBar.progress = nativeNativeKaraokePlayer.getCurrentPosition().toInt()/1000;
                 }
                 delay(100) // Update every second
             }
@@ -182,21 +191,21 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
     override fun onDestroy() {
         super.onDestroy()
-        nativeKaraokePlayerWithOboe.delete()
+        nativeNativeKaraokePlayer.delete()
         mediaPlayer?.release()
         mediaPlayer = null
     }
 
     override fun onStart() {
         super.onStart()
-        nativeKaraokePlayerWithOboe.setupKaraokePlayer()
+        nativeNativeKaraokePlayer.setupKaraokePlayer()
         setGainFromSeekBar(gainSeekBar.progress)
     }
 
     override fun onStop() {
         super.onStop()
         // Unload assets and teardown the audio stream when the activity stops
-        nativeKaraokePlayerWithOboe.teardown()
+        nativeNativeKaraokePlayer.teardown()
     }
 
     // Load the list of WAV files from assets and populate the spinner
@@ -235,9 +244,10 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
 
             // Start recording in a separate coroutine
             val recordJob = CoroutineScope(Dispatchers.IO).launch {
-                nativeKaraokePlayerWithOboe.startRecording(recordedFilePath, 9, System.currentTimeMillis())
+                nativeNativeKaraokePlayer.startRecording(recordedFilePath, 9, System.currentTimeMillis())
                 Log.d(TAG, "Recording started")
             }
+            nativeNativeKaraokePlayer.setEffectOn(true)
 
             // Play audio sample in a separate coroutine simultaneously
             val playJob = CoroutineScope(Dispatchers.IO).launch {
@@ -264,9 +274,7 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
     // Function to play audio sample using the selected WAV file from assets
     private suspend fun playAudioSample() = withContext(Dispatchers.IO) {
         try {
-            nativeKaraokePlayerWithOboe.playMusic()
-            println("music started at ${System.currentTimeMillis()}")
-
+            nativeNativeKaraokePlayer.playMusic()
             withContext(Dispatchers.Main) {
                 Toast.makeText(this@SimpleAudioPlayerActivity, "Playing sound", Toast.LENGTH_LONG).show()
                 updateSeekBar() // Start updating the seek bar
@@ -331,16 +339,18 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
     private fun stopAudioSample() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-
-                nativeKaraokePlayerWithOboe.stopMusic()
-                nativeKaraokePlayerWithOboe.stopRecording()
+                nativeNativeKaraokePlayer.stopMusic()
+                nativeNativeKaraokePlayer.stopRecording()
+                nativeNativeKaraokePlayer.setEffectOn(false)
                 isRecording = false
                 seekBar.progress = 0 // Reset the seek bar
 
                 // Merge the recorded file and selected WAV file
                 val recordedFilePath = getRecordingFilePath("recording.wav")
-                if (recordedFilePath != null && selectedWavFile != null) {
-                    val selectedFilePath = copyAssetToStorage(selectedWavFile!!) // Copy asset to accessible location
+                if (recordedFilePath != null ) {
+                    val externalDirectory = getExternalFilesDir(Environment.DIRECTORY_MUSIC)
+                    val outputFile = File(externalDirectory, "Karoke_tum_he_ho.wav")
+                    val selectedFilePath = outputFile.absolutePath
                     mergedFilePath = getMergedFilePath("merged_${System.currentTimeMillis()}")
 
                     if (mergedFilePath != null && selectedFilePath != null) {
@@ -396,7 +406,7 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
     // Function to set gain from the SeekBar progress
     private fun setGainFromSeekBar(progress: Int) {
         val gainValue = progress.toFloat() / 100f
-        nativeKaraokePlayerWithOboe.setPlayerVolume(gainValue)
+        nativeNativeKaraokePlayer.setPlayerVolume(gainValue)
         Log.d(TAG, "Gain set to $gainValue")
     }
 
