@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22.1)
 
 set (PARSELIB_DIR ../../../../parselib)
 set (IOLIB_DIR ../../../../iolib)
-project("oboemusicplayerandrecorder")
+project("OboeMusicPlayerAndRecorder")
 
 get_filename_component(SAMPLE_ROOT_DIR
         ${CMAKE_CURRENT_SOURCE_DIR}/../../.. ABSOLUTE)
@@ -26,10 +26,12 @@ include_directories(
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
-        oboemusicplayerandrecorder.cpp
-        LiveEffectEngine.cpp
-        AudioEngine.cpp
-    )
+        OboeMusicPlayerRecorder.cpp
+        Engines/EarbackEngine.cpp
+        Engines/LivekitAudioEffectEngine.cpp
+        Engines/PlayerAudioEngine.cpp
+        Engines/RecordingEngine.cpp
+)
 
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Werror "$<$<CONFIG:RELEASE>:-Ofast>")
 

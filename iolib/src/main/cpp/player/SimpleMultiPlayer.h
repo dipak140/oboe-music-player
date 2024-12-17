@@ -70,9 +70,9 @@ public:
     float getGain(int index);
     void pauseStream();
     void resumeStream();
-    void seekTo(int64_t positionMillis);
-    int64_t getPosition(int index);
-    int64_t getDuration();
+    void seekTo(int64_t positionMillis, int mSampleRate, int mNumChannels);
+    int64_t getPosition(int index, int mSampleRate, int mNumChannels);
+    int64_t getDuration(int mSampleRate, int mNumChannels);
     int64_t getFramePosition();
     int64_t getFrameTimeStamp();
     int64_t framePosition = 0;

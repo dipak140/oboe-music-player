@@ -18,7 +18,7 @@
 #define OBOE_LIVEEFFECTENGINE_H
 
 #include <jni.h>
-#include <oboe/Oboe.h>
+#include "oboe/Oboe.h"
 #include <memory>
 #include <string>
 #include <fstream>
@@ -26,9 +26,9 @@
 #include <vector>
 #include "FullDuplexPass.h"
 
-class LiveEffectEngine : public oboe::AudioStreamCallback {
+class EarbackEngine : public oboe::AudioStreamCallback {
 public:
-    LiveEffectEngine();
+    EarbackEngine();
 
     void setRecordingDeviceId(int32_t deviceId);
     void setPlaybackDeviceId(int32_t deviceId);

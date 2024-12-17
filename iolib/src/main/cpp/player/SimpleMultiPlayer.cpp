@@ -107,32 +107,34 @@ int64_t SimpleMultiPlayer::getFrameTimeStamp() {
 }
 
 
-    void SimpleMultiPlayer::seekTo(int64_t positionMillis) {
-        if (positionMillis < 0) {
-            __android_log_print(ANDROID_LOG_ERROR, TAG,
-                                "seekTo: Invalid position %lld ms", positionMillis);
-            return;
-        }
-
-        int64_t frameOffset = (positionMillis * mSampleRate * mChannelCount) / 1000;
-
-        __android_log_print(ANDROID_LOG_INFO, TAG,
-                            "seekTo: Seeking to %lld ms (%lld frames)",
-                            positionMillis, frameOffset);
-
-        // Apply the seek to all active sample sources
-        for (int32_t i = 0; i < mNumSampleBuffers; ++i) {
-            if (mSampleSources[i]->isPlaying()) {
-                mSampleSources[i]->seekToFrame(frameOffset);
-            }
-        }
+void SimpleMultiPlayer::seekTo(int64_t positionMillis, int sampleRate, int channel) {
+    if (positionMillis < 0) {
+        __android_log_print(ANDROID_LOG_ERROR, TAG,
+                            "seekTo: Invalid position %lld ms", positionMillis);
+        return;
     }
 
-    int64_t SimpleMultiPlayer::getPosition(int index){
-        return mSampleSources[index]->getCurrentPositionInMillis(mSampleRate, mChannelCount);
+    int64_t frameOffset = (positionMillis * sampleRate * channel) / 1000;
+    __android_log_print(ANDROID_LOG_INFO, TAG,
+                        "seekTo: mSampleRate to %lld (%lld channelcount)", sampleRate, channel);
+
+    __android_log_print(ANDROID_LOG_INFO, TAG,
+                        "seekTo: Seeking to %lld ms (%lld frames)",
+                        positionMillis, frameOffset);
+
+    // Apply the seek to all active sample sources
+    for (int32_t i = 0; i < mNumSampleBuffers; ++i) {
+        if (mSampleSources[i]->isPlaying()) {
+            mSampleSources[i]->seekToFrame(frameOffset);
+        }
+    }
 }
 
-int64_t SimpleMultiPlayer::getDuration(){
+    int64_t SimpleMultiPlayer::getPosition(int index, int sampleRate, int channelCount) {
+        return mSampleSources[index]->getCurrentPositionInMillis(sampleRate, channelCount);
+}
+
+int64_t SimpleMultiPlayer::getDuration(int mSampleRate, int mChannelCount){
     return mSampleSources[0]->getDurationInMillis(mSampleRate, mChannelCount);
 }
 
@@ -154,7 +156,7 @@ bool SimpleMultiPlayer::openStream() {
     builder.setDataCallback(mDataCallback);
     builder.setErrorCallback(mErrorCallback);
     builder.setPerformanceMode(PerformanceMode::LowLatency);
-    builder.setSharingMode(SharingMode::Exclusive);
+    builder.setSharingMode(SharingMode::Shared);
     builder.setSampleRateConversionQuality(SampleRateConversionQuality::Medium);
 
     Result result = builder.openStream(mAudioStream);
