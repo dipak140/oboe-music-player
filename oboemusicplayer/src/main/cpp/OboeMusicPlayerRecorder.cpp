@@ -8,7 +8,8 @@
 #include <stream/MemInputStream.h>
 #include <wav/WavStreamReader.h>
 #include <player/OneShotSampleSource.h>
-#include <player/SimpleMultiPlayer.h>
+#include <player/VocalMusicPlayer.h>
+#include <player/VocalMusicPlayer.h>
 #include "Engines/RecordingEngine.h"
 #include "Engines/EarbackEngine.h"
 
@@ -18,7 +19,7 @@ jobject g_callbackObject = nullptr; // Define g_callbackObject
 using namespace iolib;
 using namespace parselib;
 static EarbackEngine * earbackEngine = nullptr;
-static SimpleMultiPlayer* sDTPlayer = nullptr; // Dynamically allocated
+static VocalMusicPlayer* sDTPlayer = nullptr; // Dynamically allocated
 static RecordingEngine* recordingEngine = nullptr;
 static const int kOboeApiAAudio = 0;
 static const int kOboeApiOpenSLES = 1;
@@ -51,7 +52,7 @@ Java_in_reconv_oboemusicplayer_NativeMusicPlayer_onRecordingStarted(
 JNIEXPORT jboolean JNICALL
 Java_in_reconv_oboemusicplayer_NativeMusicPlayer_createPlayer(JNIEnv* env, jobject thiz) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
 
     return (sDTPlayer != nullptr) ? JNI_TRUE : JNI_FALSE;
@@ -61,7 +62,7 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setupAud
         JNIEnv* env, jobject, jint numChannels) {
     __android_log_print(ANDROID_LOG_INFO, TAG, "%s", "init()");
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     sDTPlayer->setupAudioStream(numChannels);
 }
@@ -70,7 +71,7 @@ JNIEXPORT void JNICALL
 Java_in_reconv_oboemusicplayer_NativeMusicPlayer_startAudioStreamNative(
         JNIEnv *env, jobject thiz) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     sDTPlayer->startStream();
 }
@@ -82,7 +83,7 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_teardown
     __android_log_print(ANDROID_LOG_INFO, TAG, "%s", "deinit()");
 
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     // we know in this case that the sample buffers are all 1-channel, 44.1K
     sDTPlayer->teardownAudioStream();
@@ -97,7 +98,7 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_teardown
 JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_loadWavAssetNative(
         JNIEnv* env, jobject, jbyteArray bytearray, jint index, jfloat pan) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     int len = env->GetArrayLength (bytearray);
 
@@ -125,14 +126,14 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_loadWavA
  */
 JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_unloadWavAssetsNative(JNIEnv* env, jobject) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     sDTPlayer->unloadSampleData();
 }
 
 JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_seekToPosition(JNIEnv* env, jobject, jlong position, jint mSampleRate, jint mNumChannels) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     int64_t seekPositionMillis = position;
     sDTPlayer->seekTo(seekPositionMillis, mSampleRate, mNumChannels);
@@ -143,7 +144,7 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_seekToPo
  */
 JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_trigger(JNIEnv* env, jobject, jint index) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     sDTPlayer->triggerDown(index);
 }
@@ -157,14 +158,14 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_stopTrig
 
 JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_pauseTrigger(JNIEnv* env, jobject) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     sDTPlayer->pauseStream();
 }
 
 JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_resumeTrigger(JNIEnv* env, jobject ) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     sDTPlayer->resumeStream();
 }
@@ -174,7 +175,7 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_resumeTr
  */
 JNIEXPORT jboolean JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getOutputReset(JNIEnv*, jobject) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     return sDTPlayer->getOutputReset();
 }
@@ -184,7 +185,7 @@ JNIEXPORT jboolean JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getO
  */
 JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_clearOutputReset(JNIEnv*, jobject) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     sDTPlayer->clearOutputReset();
 }
@@ -194,7 +195,7 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_clearOut
  */
 JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_restartStream(JNIEnv*, jobject) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     sDTPlayer->resetAll();
     if (sDTPlayer->openStream() && sDTPlayer->startStream()){
@@ -207,7 +208,7 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_restartS
 JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setPan(
         JNIEnv *env, jobject thiz, jint index, jfloat pan) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     sDTPlayer->setPan(index, pan);
 }
@@ -215,7 +216,7 @@ JNIEXPORT void JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setPan(
 JNIEXPORT jfloat JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getPan(
         JNIEnv *env, jobject thiz, jint  index) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     return sDTPlayer->getPan(index);
 }
@@ -239,7 +240,7 @@ JNIEXPORT jlong JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getPosi
 JNIEXPORT jfloat JNICALL Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getGain(
         JNIEnv *env, jobject thiz, jint index) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     return sDTPlayer->getGain(index);
 }
@@ -349,13 +350,6 @@ Java_in_reconv_oboemusicplayer_NativeMusicPlayer_native_1setDefaultStreamValues(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_in_reconv_oboemusicplayer_NativeMusicPlayer_setVolume(JNIEnv *env, jobject thiz,
-                                                              jfloat volume) {
-    earbackEngine ->setVolume(volume);
-}
-
-extern "C"
-JNIEXPORT void JNICALL
 Java_in_reconv_oboemusicplayer_NativeMusicPlayer_startRecording(JNIEnv *env, jobject thiz,
                                                                    jstring full_path_tofile,
                                                                    jint input_preset_preference,
@@ -434,7 +428,7 @@ extern "C"
 JNIEXPORT jlong JNICALL
 Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getMusicPlayerTimeStamp(JNIEnv *env, jobject thiz) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     return sDTPlayer->getFrameTimeStamp();
 }
@@ -443,7 +437,7 @@ extern "C"
 JNIEXPORT jlong JNICALL
 Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getMusicPlayerFramePosition(JNIEnv *env, jobject thiz) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     return sDTPlayer->getFramePosition();
 }
@@ -458,7 +452,7 @@ extern "C"
 JNIEXPORT jlong JNICALL
 Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getRecorderFramePosition(JNIEnv *env, jobject thiz) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     return recordingEngine->getFramePosition();
 }
@@ -467,7 +461,7 @@ extern "C"
 JNIEXPORT jint JNICALL
 Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getRecorderAudioSessionId(JNIEnv *env, jobject thiz) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     return recordingEngine->getAudioSessionId();
 }
@@ -476,7 +470,7 @@ extern "C"
 JNIEXPORT jint JNICALL
 Java_in_reconv_oboemusicplayer_NativeMusicPlayer_getPlayerAudioSessionId(JNIEnv *env, jobject thiz) {
     if (sDTPlayer == nullptr) {
-        sDTPlayer = new SimpleMultiPlayer();
+        sDTPlayer = new VocalMusicPlayer();
     }
     return sDTPlayer->getAudioSessionId();
 }

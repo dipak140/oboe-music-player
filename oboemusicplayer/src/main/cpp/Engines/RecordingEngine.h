@@ -20,8 +20,6 @@
 class RecordingEngine{
 public:
     RecordingEngine();
-    void setRecordingDeviceId(int32_t deviceId);
-    void setPlaybackDeviceId(int32_t deviceId);
     oboe::AudioStream *stream{};
     bool isRecording = false;
     bool firstFrameHit = false;
@@ -35,9 +33,7 @@ public:
     int64_t framePosition = 0;
     int64_t presentationTime = 0;
     jlong getFramePosition();
-
     jlong getFrameTimeStamp();
-
     jint getAudioSessionId();
 
 private:

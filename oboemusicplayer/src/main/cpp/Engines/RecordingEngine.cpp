@@ -108,13 +108,10 @@ void RecordingEngine::startRecording(const char * filePath, oboe::InputPreset in
         } while (framesRead != 0);
 
         while (isRecording) {
-
             auto result = stream->read(mybuffer, requestedFrames, kTimeoutValue * 1000);
-
             if (!firstFrameHit && framePosition == 0 && presentationTime == 0) {
                 // Get the current timestamp
                 oboe::Result results = stream->getTimestamp(CLOCK_BOOTTIME, &framePosition, &presentationTime);
-
                 if (results == oboe::Result::OK) {
                     presentationTime = currentTimeMillisRecording();
                     __android_log_print(ANDROID_LOG_INFO, "OboeAudio", "First frame timestamp: %" PRId64 " ns", presentationTime);

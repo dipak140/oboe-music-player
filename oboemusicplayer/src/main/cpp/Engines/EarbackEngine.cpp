@@ -148,32 +148,8 @@ void EarbackEngine::closeStream(std::shared_ptr<oboe::AudioStream> &stream) {
 oboe::DataCallbackResult EarbackEngine::onAudioReady(
         oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) {
 
-    static bool firstFrameHit = false;
-    static int64_t firstFrameTimestamp = 0;
-    if (!firstFrameHit) {
-        // Get the current timestamp
-        int64_t framePosition;
-        int64_t presentationTime;
-        oboe::Result result = oboeStream->getTimestamp(CLOCK_REALTIME, &framePosition, &presentationTime);
-
-        if (result == oboe::Result::OK) {
-            firstFrameTimestamp = presentationTime;  // In nanoseconds
-            __android_log_print(ANDROID_LOG_INFO, "OboeAudio", "First frame timestamp: %" PRId64 " ns", firstFrameTimestamp);
-            __android_log_print(ANDROID_LOG_INFO, "OboeAudio", "First frame position: %" PRId64 "", framePosition);
-        } else {
-            __android_log_print(ANDROID_LOG_ERROR, "OboeAudio", "Failed to get timestamp: %s", oboe::convertToText(result));
-        }
-
-        firstFrameHit = true;
-    }
     if (audioData == nullptr || numFrames <= 0) {
         return oboe::DataCallbackResult::Stop;
-    }
-
-    // Process audio data
-    float *floatData = static_cast<float*>(audioData);
-    for (int i = 0; i < numFrames; i++) {
-        floatData[i] = 0;  // Example of processing audio data
     }
 
     return mDuplexStream->onAudioReady(oboeStream, audioData, numFrames);
@@ -186,6 +162,3 @@ void EarbackEngine::warnIfNotLowLatency(std::shared_ptr<oboe::AudioStream> &audi
     }
 }
 
-void EarbackEngine::setVolume(float volume) {
-    mVolume = volume;
-}

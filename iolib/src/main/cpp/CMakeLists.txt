@@ -48,7 +48,10 @@ add_library( # Sets the name of the library.
         ${CMAKE_CURRENT_LIST_DIR}/player/SampleSource.cpp
         ${CMAKE_CURRENT_LIST_DIR}/player/SampleBuffer.cpp
         ${CMAKE_CURRENT_LIST_DIR}/player/OneShotSampleSource.cpp
-        ${CMAKE_CURRENT_LIST_DIR}/player/SimpleMultiPlayer.cpp)
+        ${CMAKE_CURRENT_LIST_DIR}/player/SimpleMultiPlayer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/player/VocalMusicPlayer.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/player/AudioRingBuffer.cpp
+)
 
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this

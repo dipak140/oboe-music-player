@@ -10,28 +10,17 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.Manifest
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
-import androidx.media3.exoplayer.ExoPlayer
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
 import `in`.reconv.oboemusicplayer.DuplexStreamForegroundService
 import kotlinx.coroutines.*
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.lang.Thread.sleep
 
 class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
