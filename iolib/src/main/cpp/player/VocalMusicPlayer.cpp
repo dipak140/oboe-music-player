@@ -14,6 +14,7 @@
 #include "VocalMusicPlayer.h"
 #include "../../../../../oboemusicplayer/oboe/include/oboe/Definitions.h"
 #include "../../../../../oboemusicplayer/oboe/include/oboe/AudioStream.h"
+#include "../../../../../oboemusicplayer/oboe/include/oboe/AudioStreamBuilder.h"
 
 static const char* TAG = "VocalMusicPlayer";
 

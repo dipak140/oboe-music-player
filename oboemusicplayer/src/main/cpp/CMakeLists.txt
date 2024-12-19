@@ -31,6 +31,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         Engines/LivekitAudioEffectEngine.cpp
         Engines/PlayerAudioEngine.cpp
         Engines/RecordingEngine.cpp
+        Engines/SimpleAudioPlayer.cpp
 )
 
 target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Werror "$<$<CONFIG:RELEASE>:-Ofast>")

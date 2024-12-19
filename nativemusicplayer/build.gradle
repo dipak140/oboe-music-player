@@ -47,5 +47,8 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation project(path: ':iolib')
     implementation project(path: ':parselib')
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation "com.google.android.exoplayer:exoplayer:2.19.1" // Use the latest version
+    implementation "io.livekit:livekit-android:2.10.0"
 }
 
