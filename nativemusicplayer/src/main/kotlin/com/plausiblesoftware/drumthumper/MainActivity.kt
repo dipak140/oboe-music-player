@@ -20,6 +20,7 @@ import io.livekit.android.renderer.SurfaceViewRenderer
 import io.livekit.android.room.Room
 import io.livekit.android.room.participant.LocalParticipant
 import io.livekit.android.room.track.LocalAudioTrack
+import io.livekit.android.room.track.LocalAudioTrackOptions
 import io.livekit.android.room.track.VideoTrack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,6 +33,7 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.nio.ByteBuffer
 
 class MainActivity: AppCompatActivity() {
 
@@ -45,7 +47,7 @@ class MainActivity: AppCompatActivity() {
     private var isAudioMuted = false
     private var isVideoMuted = false
     private var isRoomConnected = false
-    private var audioEffectCallback = CustomAudioEffectCallback()
+    private var audioEffectCallback = NewCustomAudioCallback(this)
     private var fileOutputStream: FileOutputStream? = null
 
     val wsURL = "wss://roxstar-afhk8zna.livekit.cloud"
@@ -57,7 +59,7 @@ class MainActivity: AppCompatActivity() {
         requestPermissions()
 
         val externalMusicDirectory = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        val music = File(externalMusicDirectory, "music1.wav")
+        val music = File(externalMusicDirectory, "Karoke_aaj_se_teri.wav")
 
         room = LiveKit.create(applicationContext, overrides = LiveKitOverrides(
             audioOptions = AudioOptions(
@@ -82,6 +84,7 @@ class MainActivity: AppCompatActivity() {
         nativePlayer.setCallbackObject(this)
         playButton!!.setOnClickListener{
             nativePlayer.trigger(0)
+            audioEffectCallback.onPlayStarted(true)
         }
 
         stopButton!!.setOnClickListener{
@@ -195,7 +198,7 @@ class MainActivity: AppCompatActivity() {
         }
     }
 
-
+    // Do not delete
     fun onAudioDataAvailable(audioData: ByteArray) {
         try {
             // Use app-specific external files directory

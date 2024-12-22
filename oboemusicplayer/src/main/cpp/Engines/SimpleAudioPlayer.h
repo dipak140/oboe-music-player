@@ -133,6 +133,9 @@ namespace iolib {
         bool mIsStreamPaused;
 
         void callJavaMethod(const char *methodName, const char *methodSignature, const char *str);
+
+        void
+        convertFloatToInt16(const float *input, int16_t *output, int numFrames, int numChannels);
     };
 
 }
