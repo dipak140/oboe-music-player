@@ -10,7 +10,7 @@ import kotlin.math.max
 
 class NewCustomAudioCallback(context: Context) : MixerAudioBufferCallback()  {
     private val TAG = "AudioCallback"
-    private val musicQueue: LinkedBlockingQueue<ByteArray> = LinkedBlockingQueue(200000) // Max buffer size: 100 frames
+    private val musicQueue: LinkedBlockingQueue<ByteArray> = LinkedBlockingQueue(2000) // Max buffer size: 100 frames
     private var isMusicPlaying = false
     private var currentMusicFrame: ByteArray? = null
     private var currentMusicFramePos = 0
@@ -41,15 +41,13 @@ class NewCustomAudioCallback(context: Context) : MixerAudioBufferCallback()  {
         if (musicData2 == null || musicData1 == null){
             return BufferResponse(null)
         }
+
         val combinedBuffer = ByteBuffer.allocate(musicData1.remaining() + musicData2.remaining())
         combinedBuffer.put(musicData1.slice()) // Slice ensures position/limit are respected
-
         // Copy the contents of buffer2 into the combined buffer
         combinedBuffer.put(musicData2.slice())
-
         // Flip the buffer to prepare it for reading
         combinedBuffer.flip()
-        mixByteBuffers(originalBuffer, combinedBuffer)
         return BufferResponse(combinedBuffer)
     }
 
@@ -62,12 +60,10 @@ class NewCustomAudioCallback(context: Context) : MixerAudioBufferCallback()  {
         original: ByteBuffer,
         addBuffer: ByteBuffer,
     ) {
-        println("Cap1 "+ original.capacity())
-        println("Cap2 "+ addBuffer.capacity())
         val size = max(original.capacity(), addBuffer.capacity())
         if (size <= 0) return
         for (i in 0 until size) {
-            val sum = ((original[i]*originalVolume).toInt() + (addBuffer[i]*musicVolume).toInt())
+            val sum = ((original[i]).toInt() + (addBuffer[i]).toInt())
                 .coerceIn(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt())
             original.put(i, sum.toByte())
         }
@@ -103,7 +99,6 @@ class NewCustomAudioCallback(context: Context) : MixerAudioBufferCallback()  {
             val monoSample = ((leftChannel + rightChannel) / 2).toShort() // Average the two channels
             monoBuffer.putShort(monoSample)
         }
-
         return monoArray
     }
 

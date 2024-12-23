@@ -42,8 +42,6 @@ class MainActivity: AppCompatActivity() {
     private val nativePlayer = NativeMusicPlayer()
     lateinit var room: Room
     lateinit var localParticipant: LocalParticipant
-
-
     private var isAudioMuted = false
     private var isVideoMuted = false
     private var isRoomConnected = false
@@ -59,7 +57,7 @@ class MainActivity: AppCompatActivity() {
         requestPermissions()
 
         val externalMusicDirectory = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        val music = File(externalMusicDirectory, "Karoke_aaj_se_teri.wav")
+        val music = File(externalMusicDirectory, "Karoke_tum_he_ho.wav")
 
         room = LiveKit.create(applicationContext, overrides = LiveKitOverrides(
             audioOptions = AudioOptions(
@@ -202,21 +200,21 @@ class MainActivity: AppCompatActivity() {
     fun onAudioDataAvailable(audioData: ByteArray) {
         try {
             // Use app-specific external files directory
-            if (fileOutputStream == null) {
-                val appSpecificDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC) // App-specific storage
-                println(appSpecificDir)
-                val pcmFile = File(appSpecificDir, "output_audio.pcm")
-
-                // Ensure the directory exists
-                if (!appSpecificDir!!.exists()) {
-                    appSpecificDir.mkdirs()
-                }
-
-                fileOutputStream = FileOutputStream(pcmFile)
-            }
-
-            // Write the byte array to the file
-            fileOutputStream?.write(audioData)
+//            if (fileOutputStream == null) {
+//                val appSpecificDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC) // App-specific storage
+//                println(appSpecificDir)
+//                val pcmFile = File(appSpecificDir, "output_audio.pcm")
+//
+//                // Ensure the directory exists
+//                if (!appSpecificDir!!.exists()) {
+//                    appSpecificDir.mkdirs()
+//                }
+//
+//                fileOutputStream = FileOutputStream(pcmFile)
+//            }
+//
+//            // Write the byte array to the file
+//            fileOutputStream?.write(audioData)
 
             // If room is connected, start music playback
             if (isRoomConnected) {
