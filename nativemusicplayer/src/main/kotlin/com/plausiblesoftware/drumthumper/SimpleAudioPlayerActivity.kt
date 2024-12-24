@@ -14,18 +14,13 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import com.arthenica.ffmpegkit.FFmpegKit
 import com.arthenica.ffmpegkit.ReturnCode
 import `in`.reconv.oboemusicplayer.DuplexStreamForegroundService
 import kotlinx.coroutines.*
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.lang.Thread.sleep
 
 class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener {
 
@@ -60,7 +55,6 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
         Log.d("RANDOM", "outputFile: ${outputFile.absolutePath}")
         println(outputFile.absolutePath)
         nativeNativeKaraokePlayer.initPlayer("RANDOM", outputFile.absolutePath, false)
-
         volumeControlStream = AudioManager.STREAM_MUSIC
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -185,10 +179,6 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
         }
     }
 
-    fun onRecordingStarted(random : String) {
-        println("rand: $random")
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         nativeNativeKaraokePlayer.delete()
@@ -310,31 +300,6 @@ class SimpleAudioPlayerActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeLi
         }
     }
 
-    private fun copyAssetToStorage(assetFileName: String): String? {
-        val externalDirectory = getExternalFilesDir(Environment.DIRECTORY_MUSIC)
-        val outputFile = File(externalDirectory, assetFileName)
-        println("sdasdasdsa")
-        println(outputFile.absolutePath)
-        return try {
-            val inputStream: InputStream = assets.open(assetFileName)
-            val outputStream = FileOutputStream(outputFile)
-
-            val buffer = ByteArray(1024)
-            var length: Int
-
-            while (inputStream.read(buffer).also { length = it } > 0) {
-                outputStream.write(buffer, 0, length)
-            }
-
-            inputStream.close()
-            outputStream.close()
-
-            outputFile.absolutePath
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
-        }
-    }
     // Function to stop audio sample and merge the two audio files
     private fun stopAudioSample() {
         CoroutineScope(Dispatchers.IO).launch {

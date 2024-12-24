@@ -11,7 +11,7 @@ import java.io.IOException
 
 class NativeMusicPlayer {
     /**
-     * A native method that is implemented by the 'oboemusicplayerandrecorder' native library,
+     * A native method that is implemented by the 'OboeMusicPlayerAndRecorder' native library,
      * which is packaged with this application.
      */
 
@@ -23,7 +23,7 @@ class NativeMusicPlayer {
         val NUM_PLAY_CHANNELS: Int = 2
         // Used to load the 'oboemusicplayerandrecorder' library on application startup.
         init {
-            System.loadLibrary("oboemusicplayerandrecorder")
+            System.loadLibrary("OboeMusicPlayerAndRecorder")
         }
 
         val TAG: String = "MusicPlayer"
@@ -79,11 +79,11 @@ class NativeMusicPlayer {
         teardownAudioStreamNative()
     }
 
-    fun getDuration(): Long{
-        return getDurationNative()
+    fun getDuration(mSampleRate: Int, mChannelCount: Int): Long{
+        return getDurationNative(mSampleRate, mChannelCount)
     }
 
-    private external fun getDurationNative(): Long
+    private external fun getDurationNative(mSampleRate: Int, mChannelCount: Int): Long
 
     // asset-based samples
     fun loadWavAssets(assetMgr: AssetManager) {
@@ -119,8 +119,8 @@ class NativeMusicPlayer {
     external fun restartStream()
     external fun pauseTrigger()
     external fun resumeTrigger()
-    external fun seekToPosition(position: Long)
-    external fun getPosition(index: Int): Long
+    external fun seekToPosition(position: Long, mSampleRate : Int, mChannelCount: Int)
+    external fun getPosition(index: Int, mSampleRate : Int, mChannelCount: Int): Long
 
     // External functions for Recording
     external fun create(): Boolean
@@ -141,7 +141,6 @@ class NativeMusicPlayer {
     external fun stopRecording()
     external fun resumeRecording()
     external fun pauseRecording()
-    external fun getRecordingDelay(): Int
     external fun getMusicPlayerTimeStamp(): Long
     external fun getRecorderTimeStamp(): Long
     external fun getMusicPlayerFramePosition(): Long

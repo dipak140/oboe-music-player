@@ -110,7 +110,7 @@ class NativeKaraokePlayer(private val context: Context) : DefaultLifecycleObserv
     }
 
     fun playerSeekTo(milliSecond: Long) {
-        nativePlayer.seekToPosition(milliSecond)
+        nativePlayer.seekToPosition(milliSecond, 44100, 1)
         currentPosition = milliSecond
     }
 
@@ -118,7 +118,7 @@ class NativeKaraokePlayer(private val context: Context) : DefaultLifecycleObserv
         nativePlayer.setGain(0, volume)
     }
 
-    fun getCurrentPosition(): Long = nativePlayer.getPosition(0)
+    fun getCurrentPosition(): Long = nativePlayer.getPosition(0, 44100, 1)
 
     fun getTotalDuration(): Long = totalDuration
 
@@ -130,7 +130,7 @@ class NativeKaraokePlayer(private val context: Context) : DefaultLifecycleObserv
     private val progressUpdateRunnable = object : Runnable {
         override fun run() {
             currentPosition = getCurrentPosition()
-            totalDuration = nativePlayer.getDuration() // Assuming this is available
+            totalDuration = nativePlayer.getDuration(44100, 1) // Assuming this is available
             updateState()
             handler.postDelayed(this, PROGRESS_UPDATE_DELAY)
         }
@@ -172,7 +172,7 @@ class NativeKaraokePlayer(private val context: Context) : DefaultLifecycleObserv
         nativePlayer.delete()
     }
 
-    fun setupKaraokePlayer() {
+        fun setupKaraokePlayer() {
         nativePlayer.create()
         nativePlayer.setCallbackObject(context)
         nativePlayer.setDefaultStreamValues(context)

@@ -18,7 +18,7 @@
 #define OBOE_LIVEEFFECTENGINE_H
 
 #include <jni.h>
-#include <oboe/Oboe.h>
+#include "oboe/Oboe.h"
 #include <memory>
 #include <string>
 #include <fstream>
@@ -26,30 +26,19 @@
 #include <vector>
 #include "FullDuplexPass.h"
 
-class LiveEffectEngine : public oboe::AudioStreamCallback {
+class EarbackEngine : public oboe::AudioStreamCallback {
 public:
-    LiveEffectEngine();
+    EarbackEngine();
 
     void setRecordingDeviceId(int32_t deviceId);
     void setPlaybackDeviceId(int32_t deviceId);
     oboe::AudioStream *stream{};
-    bool isRecording = true;
-    bool firstFrameHit = false;
-    bool isPaused = false;
-    bool isTimeRecorded = false;
-    int startRecordingDelay = 0;
     int64_t framePosition = 0;
-    int64_t presentationTime = 0;
-
     /**
      * @param isOn
      * @return true if it succeeds
      */
     bool setEffectOn(bool isOn);
-    // New methods for recording
-    void startRecording(const char * filePath, oboe::InputPreset inputPreset, long startRecordingTimestamp);
-    void stopRecording();
-
     /*
      * oboe::AudioStreamDataCallback interface implementation
      */
@@ -59,12 +48,6 @@ public:
     bool setAudioApi(oboe::AudioApi);
     bool isAAudioRecommended(void);
     void setVolume(float volume);  // Add this line
-    void pauseRecording();
-    void resumeRecording();
-    int getStartRecordingDelay();
-    int64_t getFramePosition();
-    int64_t getFrameTimeStamp();
-    jint getAudioSessionId();
 
 
 private:
@@ -83,16 +66,9 @@ private:
     std::unique_ptr<FullDuplexPass> mDuplexStream;
     std::shared_ptr<oboe::AudioStream> mRecordingStream;
     std::shared_ptr<oboe::AudioStream> mPlayStream;
-
     oboe::Result openPlaybackStream();
-
     void closeStreams();
-    // WAV file related methods
-    void writeWavHeader(std::ofstream &f, int sampleRate, int bitsPerSample, int numChannels);
-    void finalizeWavFile(std::ofstream &f);
-
     void closeStream(std::shared_ptr<oboe::AudioStream> &stream);
-
     oboe::AudioStreamBuilder *setupCommonStreamParameters(
         oboe::AudioStreamBuilder *builder);
     oboe::AudioStreamBuilder *setupRecordingStreamParameters(
@@ -100,20 +76,11 @@ private:
     oboe::AudioStreamBuilder *setupPlaybackStreamParameters(
         oboe::AudioStreamBuilder *builder);
     void warnIfNotLowLatency(std::shared_ptr<oboe::AudioStream> &audioStream);
-    float mVolume = 1.0f;  // Add this line
 
-    // WAV file membersf
+    // WAV file memberss
     std::ofstream mWavFile;
     std::string mWavFilePath;
-    int32_t mWavFileSampleRate;
-    int16_t mWavFileNumChannels;
-    bool mIsRecording = false;
     bool isStreamOpen = false;
-
-    void StartRecordingNative(const char *filePath);
-    void playWavFile(const char *wavFilePath);
-    void callJavaMethod(const char *methodName, const char *methodSignature, const char *str);
-    void stopPlayback();
 };
 
 #endif  // OBOE_LIVEEFFECTENGINE_H

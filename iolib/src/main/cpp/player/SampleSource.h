@@ -115,7 +115,6 @@ public:
         return currentTimeMillis;
     }
 
-
     int64_t getDurationInMillis(int32_t sampleRate, int32_t channelCount) {
         if (!mSampleBuffer) {
             __android_log_print(ANDROID_LOG_ERROR, "SampleSource", "getDurationInMillis: Sample buffer is null");
