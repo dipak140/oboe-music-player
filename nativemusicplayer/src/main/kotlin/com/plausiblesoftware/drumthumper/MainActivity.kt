@@ -20,7 +20,6 @@ import io.livekit.android.renderer.SurfaceViewRenderer
 import io.livekit.android.room.Room
 import io.livekit.android.room.participant.LocalParticipant
 import io.livekit.android.room.track.LocalAudioTrack
-import io.livekit.android.room.track.LocalAudioTrackOptions
 import io.livekit.android.room.track.VideoTrack
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,12 +30,9 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import org.json.JSONObject
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.ByteBuffer
 
 class MainActivity: AppCompatActivity() {
-
     private var playButton: Button? = null
     private var stopButton: Button? = null
     private val nativePlayer = NativeMusicPlayer()
@@ -45,9 +41,7 @@ class MainActivity: AppCompatActivity() {
     private var isAudioMuted = false
     private var isVideoMuted = false
     private var isRoomConnected = false
-    private var audioEffectCallback = NewCustomAudioCallback(this)
-    private var fileOutputStream: FileOutputStream? = null
-
+    private var audioEffectCallback = CustomMusicEffectCallback()
     val wsURL = "wss://roxstar-afhk8zna.livekit.cloud"
     val apiUrl = "https://api.dev.rockstarstudioz.com/v1/secret/generate-token-livekit"
 
@@ -62,9 +56,10 @@ class MainActivity: AppCompatActivity() {
         room = LiveKit.create(applicationContext, overrides = LiveKitOverrides(
             audioOptions = AudioOptions(
                 audioOutputType = AudioType.MediaAudioType()
+                )
             )
         )
-        )
+
         room.initVideoRenderer(findViewById<SurfaceViewRenderer>(R.id.surfaceViewRenderer))
         room.initVideoRenderer(findViewById<SurfaceViewRenderer>(R.id.surfaceViewRendererRemote))
 
@@ -79,10 +74,13 @@ class MainActivity: AppCompatActivity() {
         nativePlayer.setupAudioStream()
         nativePlayer.loadWavFile(music.absolutePath, 0, 0f)
         nativePlayer.startAudioStream()
+        // NEW
         nativePlayer.setCallbackObject(this)
+
         playButton!!.setOnClickListener{
             nativePlayer.trigger(0)
             audioEffectCallback.onPlayStarted(true)
+            nativePlayer.setGain(0, 0.5f);
         }
 
         stopButton!!.setOnClickListener{
@@ -170,9 +168,7 @@ class MainActivity: AppCompatActivity() {
             }
 
             room.connect(wsURL, token)
-
             isRoomConnected = true
-
             localParticipant = room.localParticipant
 
             // Enable microphone and camera
@@ -196,31 +192,19 @@ class MainActivity: AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        nativePlayer.unloadWavAssets()
+        nativePlayer.delete()
+    }
+
     // Do not delete
     fun onAudioDataAvailable(audioData: ByteArray) {
         try {
-            // Use app-specific external files directory
-//            if (fileOutputStream == null) {
-//                val appSpecificDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC) // App-specific storage
-//                println(appSpecificDir)
-//                val pcmFile = File(appSpecificDir, "output_audio.pcm")
-//
-//                // Ensure the directory exists
-//                if (!appSpecificDir!!.exists()) {
-//                    appSpecificDir.mkdirs()
-//                }
-//
-//                fileOutputStream = FileOutputStream(pcmFile)
-//            }
-//
-//            // Write the byte array to the file
-//            fileOutputStream?.write(audioData)
-
             // If room is connected, start music playback
             if (isRoomConnected) {
                 audioEffectCallback.startMusicPlayback(audioData)
             }
-
         } catch (e: IOException) {
             println("Error Error Error + " + e)
             e.printStackTrace()
