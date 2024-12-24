@@ -6,16 +6,15 @@ import io.livekit.android.audio.MixerAudioBufferCallback
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.concurrent.LinkedBlockingQueue
-import kotlin.math.max
 
-class NewCustomAudioCallback(context: Context) : MixerAudioBufferCallback()  {
+class CustomMusicEffectCallback() : MixerAudioBufferCallback()  {
     private val TAG = "AudioCallback"
     private val musicQueue: LinkedBlockingQueue<ByteArray> = LinkedBlockingQueue(2000) // Max buffer size: 100 frames
     private var isMusicPlaying = false
     private var currentMusicFrame: ByteArray? = null
     private var currentMusicFramePos = 0
-    private var musicVolume: Float = 0.5f
-    private var originalVolume: Float = 0.5f
+    private var musicVolume: Float = 1.0f
+    private var originalVolume: Float = 1.0f
 
     override fun onBufferRequest(
         originalBuffer: ByteBuffer,
@@ -31,7 +30,6 @@ class NewCustomAudioCallback(context: Context) : MixerAudioBufferCallback()  {
         // Get original audio data (mono vocal)
         var musicData1 = musicQueue.poll()?.let { ByteBuffer.wrap(it) }
         var musicData2 = musicQueue.poll()?.let { ByteBuffer.wrap(it) }
-
         if (musicData1 == null){
             musicData1 = musicQueue.poll()?.let { ByteBuffer.wrap(it) }
         }
@@ -44,29 +42,13 @@ class NewCustomAudioCallback(context: Context) : MixerAudioBufferCallback()  {
 
         val combinedBuffer = ByteBuffer.allocate(musicData1.remaining() + musicData2.remaining())
         combinedBuffer.put(musicData1.slice()) // Slice ensures position/limit are respected
-        // Copy the contents of buffer2 into the combined buffer
         combinedBuffer.put(musicData2.slice())
-        // Flip the buffer to prepare it for reading
         combinedBuffer.flip()
         return BufferResponse(combinedBuffer)
     }
 
     fun onPlayStarted(state: Boolean){
         isMusicPlaying = state;
-    }
-
-
-    private fun mixByteBuffers(
-        original: ByteBuffer,
-        addBuffer: ByteBuffer,
-    ) {
-        val size = max(original.capacity(), addBuffer.capacity())
-        if (size <= 0) return
-        for (i in 0 until size) {
-            val sum = ((original[i]).toInt() + (addBuffer[i]).toInt())
-                .coerceIn(Byte.MIN_VALUE.toInt(), Byte.MAX_VALUE.toInt())
-            original.put(i, sum.toByte())
-        }
     }
 
     fun startMusicPlayback(byteArray: ByteArray) {
