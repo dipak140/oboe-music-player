@@ -9,12 +9,10 @@ import java.util.concurrent.LinkedBlockingQueue
 
 class CustomMusicEffectCallback() : MixerAudioBufferCallback()  {
     private val TAG = "AudioCallback"
-    private val musicQueue: LinkedBlockingQueue<ByteArray> = LinkedBlockingQueue(2000) // Max buffer size: 100 frames
     private var isMusicPlaying = false
-    private var currentMusicFrame: ByteArray? = null
-    private var currentMusicFramePos = 0
-    private var musicVolume: Float = 1.0f
+    private var musicVolume: Float = 0.5f
     private var originalVolume: Float = 1.0f
+    private val ringBuffer = BlockingRingBuffer(48000 * 2)
 
     override fun onBufferRequest(
         originalBuffer: ByteBuffer,
@@ -27,24 +25,16 @@ class CustomMusicEffectCallback() : MixerAudioBufferCallback()  {
         if (audioFormat != AudioFormat.ENCODING_PCM_16BIT) {
             return BufferResponse(originalBuffer)
         }
-        // Get original audio data (mono vocal)
-        var musicData1 = musicQueue.poll()?.let { ByteBuffer.wrap(it) }
-        var musicData2 = musicQueue.poll()?.let { ByteBuffer.wrap(it) }
-        if (musicData1 == null){
-            musicData1 = musicQueue.poll()?.let { ByteBuffer.wrap(it) }
-        }
-        if (musicData2 == null){
-            musicData2 = musicQueue.poll()?.let { ByteBuffer.wrap(it) }
-        }
-        if (musicData2 == null || musicData1 == null){
-            return BufferResponse(null)
+
+        if(!isMusicPlaying){
+            return BufferResponse(originalBuffer)
         }
 
-        val combinedBuffer = ByteBuffer.allocate(musicData1.remaining() + musicData2.remaining())
-        combinedBuffer.put(musicData1.slice()) // Slice ensures position/limit are respected
-        combinedBuffer.put(musicData2.slice())
-        combinedBuffer.flip()
-        return BufferResponse(combinedBuffer)
+        val numBytesRequired = bytesRead // Already in bytes?
+        val outputBytes = ByteArray(numBytesRequired)
+        ringBuffer.readBlocking(outputBytes, numBytesRequired)
+        val outputBuffer = ByteBuffer.wrap(outputBytes)
+        return BufferResponse(outputBuffer)
     }
 
     fun onPlayStarted(state: Boolean){
@@ -55,19 +45,13 @@ class CustomMusicEffectCallback() : MixerAudioBufferCallback()  {
         if (!isMusicPlaying){
             return
         }
-
         if (byteArray.size % 2 != 0) {
             Log.e(TAG, "ByteArray size not even: ${byteArray.size}")
             return
         }
-
-        currentMusicFrame = byteArray.copyOf()
-        currentMusicFramePos = 0
+        val monoData = convertStereoToMono(byteArray)
+        ringBuffer.write(monoData)
         isMusicPlaying = true
-        synchronized(musicQueue) {
-            musicQueue.put(convertStereoToMono(byteArray))
-        }
-
     }
 
     private fun convertStereoToMono(stereoArray: ByteArray): ByteArray {
@@ -78,7 +62,7 @@ class CustomMusicEffectCallback() : MixerAudioBufferCallback()  {
         while (stereoBuffer.hasRemaining()) {
             val leftChannel = stereoBuffer.short.toInt()
             val rightChannel = stereoBuffer.short.toInt()
-            val monoSample = ((leftChannel + rightChannel) / 2).toShort() // Average the two channels
+            val monoSample = ((leftChannel + rightChannel) * musicVolume / 2).toInt().toShort() // Average the two channels
             monoBuffer.putShort(monoSample)
         }
         return monoArray
@@ -86,11 +70,7 @@ class CustomMusicEffectCallback() : MixerAudioBufferCallback()  {
 
     fun stopMusicPlayback() {
         isMusicPlaying = false
-        synchronized(musicQueue) {
-            musicQueue.clear()
-        }
-        currentMusicFrame = null
-        currentMusicFramePos = 0
+        ringBuffer.clear()
     }
 
     fun setMusicVolume(volume: Float) {

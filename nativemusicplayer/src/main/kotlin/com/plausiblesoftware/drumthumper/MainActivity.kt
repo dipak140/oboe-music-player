@@ -51,7 +51,7 @@ class MainActivity: AppCompatActivity() {
         requestPermissions()
 
         val externalMusicDirectory = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        val music = File(externalMusicDirectory, "Karoke_tum_he_ho.wav")
+        val music = File(externalMusicDirectory, "Karaoke.wav")
 
         room = LiveKit.create(applicationContext, overrides = LiveKitOverrides(
             audioOptions = AudioOptions(
@@ -85,6 +85,7 @@ class MainActivity: AppCompatActivity() {
 
         stopButton!!.setOnClickListener{
             nativePlayer.stopTrigger(0)
+            audioEffectCallback.stopMusicPlayback()
         }
     }
 
@@ -125,7 +126,7 @@ class MainActivity: AppCompatActivity() {
     private suspend fun fetchTokenFromServer(): String? = withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val json = JSONObject()
-        json.put("room-name", "01e192c2-6596-4d67-a24b-962088c7856f")
+        json.put("room-name", "01e192c2-6596-4d67-a24b-962088c7856")
         json.put("identity", "Dipak")
 
         val requestBody = RequestBody.create("application/json".toMediaType(), json.toString())
@@ -200,16 +201,26 @@ class MainActivity: AppCompatActivity() {
 
     // Do not delete
     fun onAudioDataAvailable(audioData: ByteArray) {
+        println("ByteArray Data size: ${audioData.size}")
         try {
-            // If room is connected, start music playback
+            // If the room is connected, let's send half the data twice
             if (isRoomConnected) {
-                audioEffectCallback.startMusicPlayback(audioData)
+                // Calculate half of the array size
+                val halfSize = audioData.size / 2
+                // Extract first half and second half
+                val firstHalf = audioData.copyOfRange(0, 720)
+                val secondHalf = audioData.copyOfRange(720, audioData.size)
+
+                // Send first half
+                audioEffectCallback.startMusicPlayback(firstHalf)
+                // Send second half
+                audioEffectCallback.startMusicPlayback(secondHalf)
             }
         } catch (e: IOException) {
-            println("Error Error Error + " + e)
             e.printStackTrace()
         }
     }
+
 
     private fun attachRemoteVideo(videoTrack: VideoTrack){
         val surfaceViewRenderer = findViewById<SurfaceViewRenderer>(R.id.surfaceViewRendererRemote)
